@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RollRadar GO - Monopoly GO Free Dice, Events, Stickers, and ROI Tools</title>
+    <meta name="description" content="A daily Monopoly GO command center for free dice links, event timing, sticker planning, Golden Blitz decisions, and dice ROI math.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://rollradargo.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="RollRadar GO - Monopoly GO Daily Tools">
+    <meta property="og:description" content="Claim dice, plan events, track sticker moves, and decide when to stop or push.">
+    <meta property="og:url" content="https://rollradargo.com/">
+    <meta property="og:image" content="https://rollradargo.com/assets/og-cover.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="RollRadar GO">
+    <meta name="twitter:description" content="Monopoly GO free dice, events, stickers, and ROI tools.">
+    <meta name="theme-color" content="#102820">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="assets/js/config.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2456404542897668"
+     crossorigin="anonymous"></script>
+    <script src="assets/js/seed-data.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "RollRadar GO",
+        "url": "https://rollradargo.com/",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "description": "Daily tools for Monopoly GO free dice links, events, stickers, and dice ROI planning.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@type": "Organization", "name": "RollRadar GO", "email": "cschat2026@gmail.com" }
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to tools</a>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="index.html">
+          <span class="brand-mark" aria-hidden="true">RR</span>
+          <span>
+            <strong data-i18n="siteName">RollRadar GO</strong>
+            <small data-i18n="brandTagline">Monopoly GO tools</small>
+          </span>
+        </a>
+        <div class="nav-links">
+          <a href="#dashboard" data-i18n="navDashboard">Dashboard</a>
+          <a href="pages/free-dice.html" data-i18n="navDice">Dice</a>
+          <a href="pages/events.html" data-i18n="navEvents">Events</a>
+          <a href="pages/stickers.html" data-i18n="navStickers">Stickers</a>
+          <a href="pages/roi-calculator.html" data-i18n="navTools">Tools</a>
+        </div>
+        <label class="language-switch">
+          <span data-i18n="language">Language</span>
+          <select id="languageSelect" aria-label="Language">
+            <option value="en">EN</option>
+            <option value="zh-CN">简中</option>
+            <option value="zh-TW">繁中</option>
+          </select>
+        </label>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero-band">
+        <div class="hero-shell">
+          <div class="hero-copy">
+            <p class="eyebrow" data-i18n="dailyControl">Daily Monopoly GO control room</p>
+            <h1 data-i18n="heroTitle">Your Monopoly GO daily command center</h1>
+            <p data-i18n="heroCopy">Check working reward links, decide whether to push an event, save sticker windows, and leave with a clear next move.</p>
+            <div class="hero-actions">
+              <a class="btn primary" href="#dashboard" data-i18n="todayPlan">Today's Best Move</a>
+              <a class="btn ghost" href="pages/free-dice.html" data-i18n="claimDice">Claim Dice</a>
+            </div>
+            <div id="heroCommandStrip" class="command-strip" aria-label="Current plan status"></div>
+            <div id="quickstartGuide" class="hero-guide" aria-label="Daily action guide"></div>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-image-card">
+              <img src="assets/media/hero-station.png" alt="Monopoly GO dashboard visual" width="1600" height="900">
+              <div class="hero-image-overlay" aria-label="Game-day reset summary">
+                <strong data-i18n="heroOverlayTitle">Game-day reset</strong>
+                <span id="heroResetSummary" data-i18n="heroOverlayCopy">Daily reminders reset with the Monopoly GO game day.</span>
+              </div>
+            </div>
+            <div class="hero-panel" aria-label="Live station summary">
+              <div class="status-row">
+                <span class="pulse"></span>
+                <span id="freshnessText" data-i18n="checking">Checking update status...</span>
+              </div>
+              <div class="hero-metric">
+                <span data-i18n="rewardLinks">Reward links</span>
+                <strong id="diceLinkCount">3</strong>
+              </div>
+              <div class="hero-metric">
+                <span data-i18n="eventWindows">Event windows</span>
+                <strong id="eventCount">4</strong>
+              </div>
+              <div class="hero-metric">
+                <span data-i18n="savedPlan">Saved plan</span>
+                <strong id="savedPlanStatus" data-i18n="ready">Ready</strong>
+              </div>
+              <div class="hero-metric">
+                <span data-i18n="nextRefresh">Daily reset</span>
+                <strong id="nextRefreshStatus">Checking...</strong>
+              </div>
+              <div class="hero-mini-note">
+                <strong data-i18n="heroSetupWhy">Next move follows your saved state</strong>
+                <span id="setupStatusRoi" data-i18n="heroSetupRoi">Claimed dice, the chosen spend window, sticker pressure, and ROI target all change the next recommendation.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ad-slot ad-top" aria-label="Advertisement">
+        <span data-i18n="adLabel">Advertisement</span>
+        <ins class="adsbygoogle" data-ad-client="ca-pub-2456404542897668" data-ad-slot="1000000001"></ins>
+      </section>
+
+      <section id="dashboard" class="section-shell dashboard-grid">
+        <article class="tool-card priority-card">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="todayPlan">Today's Best Move</p>
+            <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+          </div>
+          <h2 id="bestMoveTitle" data-i18n="planTitleEmpty">Set your dice and target to generate today plan.</h2>
+          <p id="bestMoveCopy" data-i18n="planCopyEmpty">This station should tell you what to do now, what to wait for, and where to stop.</p>
+          <div class="quick-form">
+            <label>
+              <span data-i18n="diceBank">Dice bank</span>
+              <input id="homeDiceBank" inputmode="numeric" min="0" type="number" value="1200">
+            </label>
+            <label>
+              <span data-i18n="currentPoints">Current points</span>
+              <input id="homeCurrentPoints" inputmode="numeric" min="0" type="number" value="300">
+            </label>
+            <label>
+              <span data-i18n="targetLevel">Target milestone points</span>
+              <input id="homeTargetPoints" inputmode="numeric" min="0" type="number" value="900">
+            </label>
+            <button class="btn primary" id="saveHomePlan" type="button" data-i18n="updatePlan">Update today plan</button>
+          </div>
+          <div id="targetChips" class="chip-row" aria-label="Suggested targets"></div>
+          <div class="workflow-panel">
+            <div class="card-head">
+              <p class="eyebrow" data-i18n="planDriversTitle">What is driving this call</p>
+              <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+            </div>
+            <div id="planDriversPanel" class="result-list"></div>
+          </div>
+        </article>
+
+        <article class="tool-card compact today-route-card">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="todayRoute">Today route</p>
+            <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+          </div>
+          <div id="todayRoutePanel" class="action-feed"></div>
+        </article>
+
+        <article class="tool-card compact">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="claimDice">Claim Dice</p>
+            <a href="pages/free-dice.html" data-i18n="openTool">Open tool</a>
+          </div>
+          <div id="dicePreview" class="stack-list">
+            <div class="mini-item"><strong>Daily reward route</strong><span>Open on phone, verify in game, then mark handled.</span><div class="event-meta"><span class="source-pill source-public">Public source</span></div></div>
+            <div class="mini-item"><strong>Community dice check</strong><span>Use before spending dice on events.</span><div class="event-meta"><span class="source-pill source-community">Player experience</span></div></div>
+            <div class="mini-item"><strong>Official reward page</strong><span>Use when public links conflict.</span><div class="event-meta"><span class="source-pill source-official">Official information</span></div></div>
+          </div>
+        </article>
+
+        <article class="tool-card compact">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="eventClock">Event Clock</p>
+            <a href="pages/events.html" data-i18n="openTool">Open tool</a>
+          </div>
+          <div id="eventPreview" class="stack-list">
+            <div class="mini-item"><strong>Quick Wins</strong><span>Finish daily tasks before big pushes.</span><div class="event-meta"><span class="source-pill source-official">Official information</span></div></div>
+            <div class="mini-item"><strong>Puppet Party</strong><span>Choose a milestone target before spending.</span><div class="event-meta"><span class="source-pill source-public">Public source</span></div></div>
+            <div class="mini-item"><strong>Peg-E Prize Drop</strong><span>Use tokens after checking the reward path.</span><div class="event-meta"><span class="source-pill source-public">Public source</span></div></div>
+          </div>
+        </article>
+
+        <article class="tool-card compact">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="stickerPlan">Sticker Plan</p>
+            <a href="pages/stickers.html" data-i18n="openTool">Open tool</a>
+          </div>
+          <div class="sticker-mini">
+            <label>
+              <span data-i18n="stickerMissing">Missing stickers</span>
+              <input id="missingStickerCount" inputmode="numeric" min="0" type="number" value="8">
+            </label>
+            <label class="check-row">
+              <input id="goldBlockedCheck" type="checkbox">
+              <span data-i18n="goldBlocked">Gold blocked</span>
+            </label>
+            <p id="stickerAdvice" data-i18n="stickerMidAdvice">Save wild cards until Golden Blitz rumors settle.</p>
+          </div>
+        </article>
+
+      </section>
+
+      <section class="section-shell two-column">
+        <article class="tool-card next-actions-card">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="nextActions">Next actions</p>
+            <span class="source-pill source-public" data-source-label="public">Public source</span>
+          </div>
+          <div id="nextActions" class="action-feed"></div>
+        </article>
+        <article class="tool-card">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="planSnapshot">Today plan snapshot</p>
+            <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+          </div>
+          <div id="savedStatePanel" class="result-list"></div>
+        </article>
+        <article class="tool-card">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="resourceGap">Resource gap</p>
+            <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+          </div>
+          <div id="resourceGapPanel" class="result-list"></div>
+        </article>
+        <article class="tool-card">
+          <div class="card-head">
+            <p class="eyebrow" data-i18n="dailyChecklist">Daily Checklist</p>
+            <span class="source-pill source-community" data-source-label="community">Player experience</span>
+          </div>
+          <div id="dailyResetPanel" class="daily-reset-panel"></div>
+          <ul id="dailyChecklist" class="checklist"></ul>
+        </article>
+      </section>
+
+      <section class="section-shell seo-grid">
+        <a class="seo-tile" href="pages/free-dice.html">
+          <strong data-i18n="seoDiceTitle">Free Dice Links Tracker</strong>
+          <span data-i18n="seoDiceCopy">Claim, mark used, copy status, and avoid retrying dead links.</span>
+        </a>
+        <a class="seo-tile" href="pages/events.html">
+          <strong data-i18n="seoEventsTitle">Events and Boost Windows</strong>
+          <span data-i18n="seoEventsCopy">Countdowns plus practical advice for what to claim or save.</span>
+        </a>
+        <a class="seo-tile" href="pages/stickers.html">
+          <strong data-i18n="seoStickersTitle">Sticker and Golden Blitz Planner</strong>
+          <span data-i18n="seoStickersCopy">Track missing sets, blocked golds, vault timing, and trade notes.</span>
+        </a>
+        <a class="seo-tile" href="pages/roi-calculator.html">
+          <strong data-i18n="seoRoiTitle">Dice ROI Calculator</strong>
+          <span data-i18n="seoRoiCopy">Estimate whether the next milestone is worth the dice spend.</span>
+        </a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>RollRadar GO</strong>
+        <p data-i18n="fanMade">Fan-made tools for Monopoly GO. Not affiliated with Scopely or Hasbro.</p>
+      </div>
+      <nav aria-label="Footer">
+        <a href="pages/privacy.html" data-i18n="privacy">Privacy</a>
+        <a href="pages/contact.html" data-i18n="contact">Contact</a>
+        <a href="pages/disclaimer.html" data-i18n="disclaimer">Disclaimer</a>
+        <a href="sitemap.xml">Sitemap</a>
+      </nav>
+    </footer>
+    <nav class="mobile-tabbar" aria-label="Mobile quick navigation">
+      <a class="is-active" href="index.html#dashboard" data-i18n="navDashboard">Dashboard</a>
+      <a href="pages/free-dice.html" data-i18n="navDice">Dice</a>
+      <a href="pages/events.html" data-i18n="navEvents">Events</a>
+      <a href="pages/stickers.html" data-i18n="navStickers">Stickers</a>
+      <a href="pages/roi-calculator.html" data-i18n="roiTool">ROI</a>
+    </nav>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>

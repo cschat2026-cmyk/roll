@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monopoly GO Dice ROI and Milestone Calculator - RollRadar GO</title>
+    <meta name="description" content="Estimate Monopoly GO milestone dice cost, reward value, push-or-stop decisions, and boost timing for event planning.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://rollradargo.com/pages/roi-calculator.html">
+    <meta property="og:title" content="Monopoly GO Dice ROI Calculator">
+    <meta property="og:description" content="Calculate whether to push, wait, or stop before spending dice on event milestones.">
+    <meta property="og:url" content="https://rollradargo.com/pages/roi-calculator.html">
+    <meta property="og:image" content="https://rollradargo.com/assets/og-cover.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <script src="../assets/js/config.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2456404542897668"
+     crossorigin="anonymous"></script>
+    <script src="../assets/js/seed-data.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">RR</span><span><strong data-i18n="siteName">RollRadar GO</strong><small data-i18n="brandTagline">Monopoly GO tools</small></span></a>
+        <div class="nav-links"><a href="../index.html" data-i18n="navDashboard">Dashboard</a><a href="free-dice.html" data-i18n="navDice">Dice</a><a href="events.html" data-i18n="navEvents">Events</a><a href="stickers.html" data-i18n="navStickers">Stickers</a></div>
+        <label class="language-switch"><span data-i18n="language">Language</span><select id="languageSelect"><option value="en">EN</option><option value="zh-CN">简中</option><option value="zh-TW">繁中</option></select></label>
+      </nav>
+    </header>
+    <main>
+      <section class="page-hero">
+        <div class="section-shell">
+          <p class="eyebrow" data-i18n="stopOrPush">Stop or push</p>
+          <h1 data-i18n="roiPageTitle">Dice ROI and Milestone Calculator</h1>
+          <p data-i18n="roiPageCopy">Enter your dice bank, current event points, target milestone, and roll multiplier. The calculator estimates whether the next push is worth it.</p>
+          <div class="chip-row">
+            <span class="source-pill source-inference" data-i18n="roiHeroChip1">Most useful after claiming dice</span>
+            <span class="source-pill source-public" data-i18n="roiHeroChip2">Save result back to dashboard</span>
+            <span class="source-pill source-community" data-i18n="roiHeroChip3">Set a stop line, not just a target</span>
+          </div>
+        </div>
+      </section>
+      <section class="ad-slot" aria-label="Advertisement"><span data-i18n="adLabel">Advertisement</span><ins class="adsbygoogle" data-ad-client="ca-pub-2456404542897668" data-ad-slot="1000000005"></ins></section>
+      <section class="section-shell tool-grid mobile-aside-first">
+        <article class="tool-card">
+          <form id="roiForm" class="planner-form">
+            <label><span data-i18n="diceBank">Dice bank</span><input id="roiDice" type="number" min="0" inputmode="numeric" value="1200"></label>
+            <label><span data-i18n="currentPoints">Current points</span><input id="roiCurrent" type="number" min="0" inputmode="numeric" value="300"></label>
+            <label><span data-i18n="targetLevel">Target milestone points</span><input id="roiTarget" type="number" min="0" inputmode="numeric" value="900"></label>
+            <label><span data-i18n="multiplier">Roll multiplier</span><input id="roiMultiplier" type="number" min="1" inputmode="numeric" value="10"></label>
+            <label><span data-i18n="roiWindow">Spend window</span><select id="roiWindowSelect"></select></label>
+            <label><span data-i18n="boardState">Board position</span><select id="roiBoardState"><option value="neutral" data-i18n="boardNeutral">Neutral</option><option value="good" data-i18n="boardGood">Near scoring tiles</option><option value="bad" data-i18n="boardBad">Poor tile setup</option></select></label>
+            <label><span data-i18n="boostState">Boost state</span><select id="roiBoostState"><option value="none" data-i18n="boostNone">No boost</option><option value="boost" data-i18n="boostActive">Helpful boost active</option><option value="watch" data-i18n="boostWatch">Waiting for boost</option></select></label>
+            <div id="roiResult" class="mini-item calculator-result"></div>
+            <div id="roiContextPanel" class="decision-meter" aria-label="ROI decision context"></div>
+            <div class="workflow-panel">
+              <div class="card-head">
+                <p class="eyebrow" data-i18n="roiDecisionPlan">Decision plan</p>
+                <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+              </div>
+              <div id="roiDecisionPlan" class="action-feed"></div>
+            </div>
+            <div class="workflow-panel">
+              <div class="card-head">
+                <p class="eyebrow" data-i18n="roiTargets">Target options</p>
+                <span class="source-pill source-public" data-source-label="public">Public source</span>
+              </div>
+              <div id="roiTargetOptions" class="result-list"></div>
+            </div>
+            <div class="workflow-panel">
+              <div class="card-head">
+                <p class="eyebrow" data-i18n="impactPanel">Plan impact</p>
+                <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+              </div>
+              <div id="roiImpactPanel" class="result-list"></div>
+            </div>
+          </form>
+        </article>
+        <aside class="tool-card">
+          <p class="eyebrow" data-i18n="milestoneReference">Milestone reference</p>
+          <h2 data-i18n="rewardValueTable">Reward value table</h2>
+          <p data-i18n="milestoneCopy">Use the full public Puppet Party ladder to choose a realistic stop point. Deep milestones can change by region or late corrections, so verify expensive targets in game before spending dice.</p>
+          <div id="milestoneList" class="result-list"></div>
+        </aside>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>RollRadar GO</strong><p data-i18n="roiFooterCopy">Calculator outputs are planning guidance, not official odds.</p></div><nav><a href="privacy.html" data-i18n="privacy">Privacy</a><a href="contact.html" data-i18n="contact">Contact</a><a href="disclaimer.html" data-i18n="disclaimer">Disclaimer</a></nav></footer>
+    <nav class="mobile-tabbar" aria-label="Mobile quick navigation">
+      <a href="../index.html#dashboard" data-i18n="navDashboard">Dashboard</a>
+      <a href="free-dice.html" data-i18n="navDice">Dice</a>
+      <a href="events.html" data-i18n="navEvents">Events</a>
+      <a href="stickers.html" data-i18n="navStickers">Stickers</a>
+      <a class="is-active" href="roi-calculator.html" data-i18n="roiTool">ROI</a>
+    </nav>
+    <script src="../assets/js/app.js"></script>
+  </body>
+</html>

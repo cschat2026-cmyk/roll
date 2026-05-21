@@ -1,0 +1,609 @@
+{
+  "meta": {
+    "brand": "RollRadar GO",
+    "game": "Monopoly GO",
+    "productionDomain": "https://rollradargo.com",
+    "adsenseClient": "ca-pub-2456404542897668",
+    "analyticsId": "G-REPLACE_ME",
+    "updateCadenceHours": 6,
+    "updatedAt": "2026-05-21T02:20:00.000Z",
+    "nextRefreshAt": "2026-05-21T08:20:00.000Z",
+    "updateNote": "May 21 update: Quick Wins follows the 13:00 UTC game-day reset, dice link handling is versioned by active reward link, spend triggers exclude daily utility tasks, and watch-only community items require in-game confirmation before they influence decisions.",
+    "sourcePolicy": {
+      "official": "Official information from Scopely or in-game screens.",
+      "public": "Publicly visible web pages, creator posts, or published reward lists.",
+      "community": "Repeated player reports from Reddit, Discord, Facebook groups, YouTube/TikTok comments, or trading communities.",
+      "inference": "Planning guidance inferred from known event patterns and resource math. Not official."
+    }
+  },
+  "quickLinks": [
+    {
+      "label": "Official Monopoly GO",
+      "url": "https://www.monopolygo.com/",
+      "source": "official"
+    },
+    {
+      "label": "Monopoly GO on Facebook",
+      "url": "https://www.facebook.com/monopolygo",
+      "source": "official"
+    },
+    {
+      "label": "Monopoly GO Discord",
+      "url": "https://discord.gg/monopolygo",
+      "source": "official"
+    }
+  ],
+  "diceLinks": [
+    {
+      "id": "daily-2",
+      "label": "25 dice community reward",
+      "dice": 25,
+      "status": "check",
+      "claimUrl": "https://www.monopolygo.com/benefits",
+      "expiresAt": "2026-05-22T23:59:00+08:00",
+      "source": "community",
+      "note": "Community-shared benefit route reported on May 21. Open on your phone, verify in game, then mark handled."
+    },
+    {
+      "id": "daily-3",
+      "label": "Daily active dice check",
+      "dice": 25,
+      "status": "check",
+      "claimUrl": "https://www.monopolygo.com/rewards",
+      "expiresAt": "2026-05-22T23:59:00+08:00",
+      "source": "public",
+      "note": "Public dice-link pages update often and links expire quickly. Use this as today's second check before event spending."
+    },
+    {
+      "id": "backup-official",
+      "label": "Official reward page",
+      "dice": 0,
+      "status": "official",
+      "claimUrl": "https://www.monopolygo.com/rewards",
+      "expiresAt": "2026-12-31T23:59:00+08:00",
+      "source": "official",
+      "note": "Use this as the source fallback whenever community links conflict."
+    }
+  ],
+  "playerTargets": [
+    {
+      "id": "next-dice",
+      "label": "Next dice reward",
+      "points": 600,
+      "source": "inference",
+      "reason": "Common stop point when the next dice reward is close enough to justify a controlled push."
+    },
+    {
+      "id": "sticker-pack",
+      "label": "Sticker pack milestone",
+      "points": 1600,
+      "source": "inference",
+      "reason": "Useful when Sticker Boom or album pressure makes a pack more valuable than raw dice."
+    },
+    {
+      "id": "big-dice",
+      "label": "Large dice payout",
+      "points": 2200,
+      "source": "inference",
+      "reason": "Only attempt with a healthy dice bank or a strong event/boost overlap."
+    }
+  ],
+  "events": [
+    {
+      "id": "quick-wins",
+      "name": "Quick Wins",
+      "type": "daily",
+      "status": "active",
+      "startsAt": "2026-05-21T13:00:00.000Z",
+      "endsAt": "2026-05-22T13:00:00.000Z",
+      "source": "official",
+      "bestFor": [
+        "sticker packs",
+        "daily progress",
+        "low dice accounts"
+      ],
+      "actions": [
+        "Use this as a daily blocker, not a dice-spend trigger.",
+        "Finish the three tasks before judging event ROI, because packs and small rewards change the plan.",
+        "The site resets this checklist on the 13:00 UTC game-day anchor; if the in-game timer differs, follow the game."
+      ]
+    },
+    {
+      "id": "puppet-party",
+      "name": "Puppet Party",
+      "type": "main",
+      "status": "active",
+      "startsAt": "2026-05-21T01:00:00+08:00",
+      "endsAt": "2026-05-22T01:00:00+08:00",
+      "source": "public",
+      "bestFor": [
+        "Peg-E tokens",
+        "racing flags",
+        "corner scoring"
+      ],
+      "actions": [
+        "Use corner-tile board position before raising multiplier.",
+        "Treat milestone 32 as the practical mid-stop if you need flags without going all in.",
+        "Send the chosen point target to ROI before spending dice."
+      ]
+    },
+    {
+      "id": "peg-e-prize-drop",
+      "name": "Peg-E Prize Drop",
+      "type": "special",
+      "status": "active",
+      "startsAt": "2026-05-21T01:00:00+08:00",
+      "endsAt": "2026-05-22T00:00:00+08:00",
+      "source": "public",
+      "bestFor": [
+        "sticker packs",
+        "free rolls",
+        "sticker value"
+      ],
+      "actions": [
+        "Collect tokens from Puppet Party and tournament rewards before dropping.",
+        "Spend tokens in one focused session so prize paths are easier to judge.",
+        "If dice bank is low, use Peg-E as a subsidy rather than chasing deep milestones."
+      ]
+    },
+    {
+      "id": "aladdin-racers",
+      "name": "Aladdin Racers",
+      "type": "race",
+      "status": "active",
+      "startsAt": "2026-05-21T01:00:00+08:00",
+      "endsAt": "2026-05-25T04:00:00+08:00",
+      "source": "public",
+      "bestFor": [
+        "team racing",
+        "racing flags",
+        "race dice"
+      ],
+      "actions": [
+        "Do not spend all flags before your team agrees on a target.",
+        "Add flags from Quick Wins, shop gifts, Puppet Party, and tournaments before judging the gap.",
+        "If teammates are inactive, protect dice and only push shared checkpoints."
+      ]
+    },
+    {
+      "id": "sticker-boom",
+      "name": "Sticker Boom Watch",
+      "type": "boost",
+      "status": "watch",
+      "startsAt": "2026-05-21T20:00:00+08:00",
+      "endsAt": "2026-05-22T23:00:00+08:00",
+      "source": "community",
+      "bestFor": [
+        "opening vaults",
+        "large sticker packs",
+        "album pushes"
+      ],
+      "actions": [
+        "Keep vaults and large packs parked until an in-game boost appears.",
+        "If no boost appears, finish trades first and keep packs unopened.",
+        "Use this as a watch trigger, not a confirmed official window."
+      ]
+    },
+    {
+      "id": "golden-blitz-watch",
+      "name": "Golden Blitz Watch",
+      "type": "trade",
+      "status": "watch",
+      "startsAt": "2026-05-21T20:00:00+08:00",
+      "endsAt": "2026-05-22T20:00:00+08:00",
+      "source": "community",
+      "bestFor": [
+        "gold sticker trades",
+        "album completion",
+        "friend trading"
+      ],
+      "actions": [
+        "Prepare screenshots of duplicate gold stickers and missing targets.",
+        "Do not burn wild cards on rumored Blitz stickers until the in-game pair is confirmed.",
+        "Save trade partner notes locally before the window opens."
+      ]
+    },
+    {
+      "id": "high-roller",
+      "name": "High Roller Watch",
+      "type": "boost",
+      "status": "watch",
+      "startsAt": "2026-05-21T21:00:00+08:00",
+      "endsAt": "2026-05-21T21:10:00+08:00",
+      "source": "community",
+      "bestFor": [
+        "large dice banks",
+        "top event milestones",
+        "tournament push"
+      ],
+      "actions": [
+        "Use only if your dice bank can absorb variance.",
+        "Pair with corner-tile position during Puppet Party or with a race-flag target.",
+        "Stop when the next milestone cost exceeds the dice return target."
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "eventId": "puppet-party",
+      "eventName": "Puppet Party Planner",
+      "source": "public",
+      "sourceUrl": "https://www.supercheats.com/monopoly-go-walkthrough-guide/monopoly-go-puppet-party-rewards-and-milestones",
+      "coverage": "Full 62-step public reward ladder checked May 21, 2026.",
+      "steps": [
+        {
+          "points": 5,
+          "reward": "5 Peg-E tokens",
+          "diceValue": 20
+        },
+        {
+          "points": 15,
+          "reward": "30 dice",
+          "diceValue": 30
+        },
+        {
+          "points": 30,
+          "reward": "60 Flags",
+          "diceValue": 36
+        },
+        {
+          "points": 60,
+          "reward": "8 Peg-E tokens",
+          "diceValue": 28
+        },
+        {
+          "points": 95,
+          "reward": "1-star sticker pack",
+          "diceValue": 12
+        },
+        {
+          "points": 145,
+          "reward": "10 Peg-E tokens",
+          "diceValue": 34
+        },
+        {
+          "points": 195,
+          "reward": "55 dice",
+          "diceValue": 55
+        },
+        {
+          "points": 260,
+          "reward": "1-star sticker pack",
+          "diceValue": 12
+        },
+        {
+          "points": 325,
+          "reward": "12 Peg-E tokens",
+          "diceValue": 42
+        },
+        {
+          "points": 450,
+          "reward": "135 dice",
+          "diceValue": 135
+        },
+        {
+          "points": 500,
+          "reward": "15 Peg-E tokens",
+          "diceValue": 50
+        },
+        {
+          "points": 600,
+          "reward": "60 Flags",
+          "diceValue": 36
+        },
+        {
+          "points": 700,
+          "reward": "17 Peg-E tokens",
+          "diceValue": 58
+        },
+        {
+          "points": 800,
+          "reward": "2-star sticker pack",
+          "diceValue": 35
+        },
+        {
+          "points": 925,
+          "reward": "150 dice",
+          "diceValue": 150
+        },
+        {
+          "points": 1050,
+          "reward": "80 Flags",
+          "diceValue": 48
+        },
+        {
+          "points": 1200,
+          "reward": "175 dice",
+          "diceValue": 175
+        },
+        {
+          "points": 1300,
+          "reward": "High Roller 5 min",
+          "diceValue": 25
+        },
+        {
+          "points": 1425,
+          "reward": "20 Peg-E tokens",
+          "diceValue": 68
+        },
+        {
+          "points": 1750,
+          "reward": "375 dice",
+          "diceValue": 375
+        },
+        {
+          "points": 1875,
+          "reward": "22 Peg-E tokens",
+          "diceValue": 74
+        },
+        {
+          "points": 2325,
+          "reward": "80 Flags",
+          "diceValue": 48
+        },
+        {
+          "points": 2450,
+          "reward": "Cash Boost 10 min",
+          "diceValue": 20
+        },
+        {
+          "points": 2600,
+          "reward": "25 Peg-E tokens",
+          "diceValue": 84
+        },
+        {
+          "points": 3100,
+          "reward": "400 dice",
+          "diceValue": 400
+        },
+        {
+          "points": 3250,
+          "reward": "3-star sticker pack",
+          "diceValue": 75
+        },
+        {
+          "points": 3425,
+          "reward": "27 Peg-E tokens",
+          "diceValue": 90
+        },
+        {
+          "points": 3600,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 4150,
+          "reward": "450 dice",
+          "diceValue": 450
+        },
+        {
+          "points": 4350,
+          "reward": "30 Peg-E tokens",
+          "diceValue": 100
+        },
+        {
+          "points": 4525,
+          "reward": "100 Flags",
+          "diceValue": 60
+        },
+        {
+          "points": 5125,
+          "reward": "500 dice",
+          "diceValue": 500
+        },
+        {
+          "points": 5275,
+          "reward": "Cash Boost 10 min",
+          "diceValue": 20
+        },
+        {
+          "points": 5475,
+          "reward": "35 Peg-E tokens",
+          "diceValue": 116
+        },
+        {
+          "points": 6150,
+          "reward": "550 dice",
+          "diceValue": 550
+        },
+        {
+          "points": 6400,
+          "reward": "35 Peg-E tokens",
+          "diceValue": 116
+        },
+        {
+          "points": 6675,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 6975,
+          "reward": "40 Peg-E tokens",
+          "diceValue": 132
+        },
+        {
+          "points": 7850,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 8550,
+          "reward": "600 dice",
+          "diceValue": 600
+        },
+        {
+          "points": 8900,
+          "reward": "40 Peg-E tokens",
+          "diceValue": 132
+        },
+        {
+          "points": 9300,
+          "reward": "100 Flags",
+          "diceValue": 60
+        },
+        {
+          "points": 10025,
+          "reward": "650 dice",
+          "diceValue": 650
+        },
+        {
+          "points": 10350,
+          "reward": "Mega Heist 30 min",
+          "diceValue": 40
+        },
+        {
+          "points": 10725,
+          "reward": "50 Peg-E tokens",
+          "diceValue": 165
+        },
+        {
+          "points": 11725,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 12175,
+          "reward": "50 Peg-E tokens",
+          "diceValue": 165
+        },
+        {
+          "points": 12950,
+          "reward": "700 dice",
+          "diceValue": 700
+        },
+        {
+          "points": 13425,
+          "reward": "70 Peg-E tokens",
+          "diceValue": 231
+        },
+        {
+          "points": 14925,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 15750,
+          "reward": "750 dice",
+          "diceValue": 750
+        },
+        {
+          "points": 18525,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 19175,
+          "reward": "120 Flags",
+          "diceValue": 72
+        },
+        {
+          "points": 20400,
+          "reward": "1000 dice",
+          "diceValue": 1000
+        },
+        {
+          "points": 22700,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 26325,
+          "reward": "2500 dice",
+          "diceValue": 2500
+        },
+        {
+          "points": 27175,
+          "reward": "140 Flags",
+          "diceValue": 84
+        },
+        {
+          "points": 32125,
+          "reward": "3500 dice",
+          "diceValue": 3500
+        },
+        {
+          "points": 32950,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 33675,
+          "reward": "Builder's Bash 30 min",
+          "diceValue": 45
+        },
+        {
+          "points": 35325,
+          "reward": "Cash",
+          "diceValue": 0
+        },
+        {
+          "points": 40675,
+          "reward": "3000 dice",
+          "diceValue": 3000
+        }
+      ]
+    }
+  ],
+  "stickerSets": [
+    {
+      "id": "starter",
+      "name": "Early Album Sets",
+      "difficulty": "easy",
+      "recommendation": "Trade duplicates aggressively. Do not spend wild cards here.",
+      "source": "community"
+    },
+    {
+      "id": "mid",
+      "name": "Mid Album Sets",
+      "difficulty": "medium",
+      "recommendation": "Open vaults during Sticker Boom and save 4-star dupes for fair trades.",
+      "source": "community"
+    },
+    {
+      "id": "gold",
+      "name": "Gold-Blocked Sets",
+      "difficulty": "hard",
+      "recommendation": "Track Golden Blitz rumors and hold wild cards until the final week unless one sticker blocks a major dice reward.",
+      "source": "inference"
+    }
+  ],
+  "seoPages": [
+    {
+      "slug": "/pages/free-dice.html",
+      "title": "Monopoly GO Free Dice Links Tracker",
+      "intent": "Players search daily for working dice links and need local claimed state."
+    },
+    {
+      "slug": "/pages/events.html",
+      "title": "Monopoly GO Events, Boosts, and What To Do Next",
+      "intent": "Players need schedule windows plus action advice, not only countdowns."
+    },
+    {
+      "slug": "/pages/stickers.html",
+      "title": "Monopoly GO Sticker and Golden Blitz Planner",
+      "intent": "Album completion creates repeated visits, trading decisions, and high-value FAQ traffic."
+    },
+    {
+      "slug": "/pages/roi-calculator.html",
+      "title": "Monopoly GO Dice ROI and Milestone Calculator",
+      "intent": "Players ask whether to push, stop, save dice, or wait for boosts."
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-05-21",
+      "items": [
+        "May 21 source review: dice, Puppet Party, Peg-E, Aladdin Racers, and sticker watch items checked. Puppet Party now uses a full 62-step public ladder; community watch items remain preparation-only until verified in game.",
+        "Separated confirmed event windows from community watch items so players do not treat rumors as spend-now triggers.",
+        "Active content after pruning: 3 reward routes, 7 event windows. Removed 0 expired reward routes and 0 old event windows."
+      ]
+    },
+    {
+      "date": "2026-05-20",
+      "items": [
+        "Connected free dice, event watch, sticker pressure, vault timing, Golden Blitz prep, and ROI saved targets into one dashboard loop.",
+        "Improved mobile card flow, local saved state, source labels, SEO, ads, legal pages, sitemap, robots, and domain replacement hooks."
+      ]
+    }
+  ]
+}

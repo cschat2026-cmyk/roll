@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monopoly GO Sticker and Golden Blitz Planner - RollRadar GO</title>
+    <meta name="description" content="Plan Monopoly GO sticker trades, Golden Blitz decisions, wild card timing, vault openings, and album completion priorities.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://rollradargo.com/pages/stickers.html">
+    <meta property="og:title" content="Monopoly GO Sticker and Golden Blitz Planner">
+    <meta property="og:description" content="Track missing stickers, gold-blocked status, trade notes, and vault timing advice.">
+    <meta property="og:url" content="https://rollradargo.com/pages/stickers.html">
+    <meta property="og:image" content="https://rollradargo.com/assets/og-cover.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <script src="../assets/js/config.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2456404542897668"
+     crossorigin="anonymous"></script>
+    <script src="../assets/js/seed-data.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">RR</span><span><strong data-i18n="siteName">RollRadar GO</strong><small data-i18n="brandTagline">Monopoly GO tools</small></span></a>
+        <div class="nav-links"><a href="../index.html" data-i18n="navDashboard">Dashboard</a><a href="free-dice.html" data-i18n="navDice">Dice</a><a href="events.html" data-i18n="navEvents">Events</a><a href="roi-calculator.html" data-i18n="navTools">Tools</a></div>
+        <label class="language-switch"><span data-i18n="language">Language</span><select id="languageSelect"><option value="en">EN</option><option value="zh-CN">简中</option><option value="zh-TW">繁中</option></select></label>
+      </nav>
+    </header>
+    <main>
+      <section class="page-hero">
+        <div class="section-shell">
+          <p class="eyebrow" data-i18n="albumDecisions">Album decisions</p>
+          <h1 data-i18n="stickersPageTitle">Sticker and Golden Blitz Planner</h1>
+          <p data-i18n="stickersPageCopy">Use this when you are deciding whether to trade, open a vault, wait for Sticker Boom, or save wild cards for gold-blocked sets.</p>
+          <div class="chip-row">
+            <span class="source-pill source-community" data-i18n="stickersHeroChip1">High return visit value</span>
+            <span class="source-pill source-inference" data-i18n="stickersHeroChip2">Feeds reserve advice</span>
+            <span class="source-pill source-public" data-i18n="stickersHeroChip3">Best used before vaults</span>
+          </div>
+        </div>
+      </section>
+      <section class="ad-slot" aria-label="Advertisement"><span data-i18n="adLabel">Advertisement</span><ins class="adsbygoogle" data-ad-client="ca-pub-2456404542897668" data-ad-slot="1000000004"></ins></section>
+      <section class="section-shell tool-grid mobile-aside-first">
+        <article class="tool-card">
+          <form id="stickerPlanner" class="planner-form">
+            <div class="card-head"><div><p class="eyebrow" data-i18n="planner">Planner</p><h2 data-i18n="whatNext">What should I do next?</h2></div><span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span></div>
+            <label><span data-i18n="stickerMissing">Missing stickers</span><input id="plannerMissing" type="number" min="0" inputmode="numeric" value="8"></label>
+            <label><span data-i18n="tradableDupes">Tradable duplicates</span><input id="plannerDupes" type="number" min="0" inputmode="numeric" value="12"></label>
+            <label class="check-row"><input id="plannerGold" type="checkbox"><span data-i18n="goldBlockedSet">Gold-blocked set</span></label>
+            <div class="trade-builder">
+              <p class="eyebrow" data-i18n="tradeBuilder">Trade builder</p>
+              <div class="trade-grid">
+                <label><span data-i18n="tradePartner">Partner</span><input id="tradePartner" type="text" autocomplete="off" data-i18n-placeholder="tradePartnerPlaceholder" placeholder="Alex / Discord @name"></label>
+                <label><span data-i18n="tradeNeed">Need</span><input id="tradeNeed" type="text" autocomplete="off" data-i18n-placeholder="tradeNeedPlaceholder" placeholder="Sticker you need"></label>
+                <label><span data-i18n="tradeOffer">Offer</span><input id="tradeOffer" type="text" autocomplete="off" data-i18n-placeholder="tradeOfferPlaceholder" placeholder="Sticker you can send"></label>
+              </div>
+              <button class="btn primary" id="addTradeBtn" type="button" data-i18n="addTrade">Add trade</button>
+            </div>
+            <div class="workflow-panel">
+              <div class="card-head">
+                <p class="eyebrow" data-i18n="tradeQueue">Trade queue</p>
+                <span id="tradeQueueCount" class="source-pill source-public">0</span>
+              </div>
+              <div id="tradeQueueList" class="result-list"></div>
+            </div>
+            <div id="stickerResult" class="mini-item calculator-result"></div>
+            <div class="workflow-panel">
+              <div class="card-head">
+                <p class="eyebrow" data-i18n="vaultDecision">Vault decision</p>
+                <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+              </div>
+              <div class="trade-grid">
+                <label><span data-i18n="vaultStars">Vault stars ready</span><input id="vaultStars" type="number" min="0" inputmode="numeric" value="700"></label>
+                <label><span data-i18n="packBacklog">Packs waiting</span><input id="packBacklog" type="number" min="0" inputmode="numeric" value="6"></label>
+                <label class="check-row"><input id="stickerBoomReady" type="checkbox"><span data-i18n="stickerBoomReady">Sticker Boom active soon</span></label>
+              </div>
+              <div id="vaultDecisionResult" class="mini-item calculator-result"></div>
+              <div id="vaultDecisionSteps" class="action-feed"></div>
+            </div>
+            <div class="workflow-panel">
+              <div class="card-head">
+                <p class="eyebrow" data-i18n="stickerNextSteps">Next steps</p>
+                <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+              </div>
+              <div id="stickerNextSteps" class="action-feed"></div>
+            </div>
+            <div class="workflow-panel">
+              <div class="card-head">
+                <p class="eyebrow" data-i18n="impactPanel">Plan impact</p>
+                <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+              </div>
+              <div id="stickerImpactPanel" class="result-list"></div>
+            </div>
+          </form>
+        </article>
+        <aside class="tool-card">
+          <p class="eyebrow" data-i18n="rulesThumb">Rules of thumb</p>
+          <h2 data-i18n="sourceAdvice">Source-labeled advice</h2>
+          <div class="sticker-list">
+            <div class="mini-item"><strong data-i18n="official">Official information</strong><span data-i18n="sourceOfficialAdviceCopy">In-game album rewards, pack claims, vaults, and Golden Blitz screens should override community rumors.</span></div>
+            <div class="mini-item"><strong data-i18n="community">Player experience</strong><span data-i18n="sourceCommunityAdviceCopy">Many players regret opening vaults before Sticker Boom or spending wild cards before Blitz windows settle.</span></div>
+            <div class="mini-item"><strong data-i18n="inference">Reasoned suggestion</strong><span data-i18n="sourceInferenceAdviceCopy">Use wild cards on gold blockers only when the album deadline or dice reward makes waiting too risky.</span></div>
+          </div>
+        </aside>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>RollRadar GO</strong><p data-i18n="stickersFooterCopy">Sticker plans are saved locally on this device.</p></div><nav><a href="privacy.html" data-i18n="privacy">Privacy</a><a href="contact.html" data-i18n="contact">Contact</a><a href="disclaimer.html" data-i18n="disclaimer">Disclaimer</a></nav></footer>
+    <nav class="mobile-tabbar" aria-label="Mobile quick navigation">
+      <a href="../index.html#dashboard" data-i18n="navDashboard">Dashboard</a>
+      <a href="free-dice.html" data-i18n="navDice">Dice</a>
+      <a href="events.html" data-i18n="navEvents">Events</a>
+      <a class="is-active" href="stickers.html" data-i18n="navStickers">Stickers</a>
+      <a href="roi-calculator.html" data-i18n="roiTool">ROI</a>
+    </nav>
+    <script src="../assets/js/app.js"></script>
+  </body>
+</html>

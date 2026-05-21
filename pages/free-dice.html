@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monopoly GO Free Dice Links Tracker - RollRadar GO</title>
+    <meta name="description" content="Track Monopoly GO free dice links, mark claimed rewards, copy links, and avoid retrying expired or already-used rewards.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://rollradargo.com/pages/free-dice.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Monopoly GO Free Dice Links Tracker">
+    <meta property="og:description" content="Daily reward links with local claimed state, source labels, and refresh guidance.">
+    <meta property="og:url" content="https://rollradargo.com/pages/free-dice.html">
+    <meta property="og:image" content="https://rollradargo.com/assets/og-cover.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <script src="../assets/js/config.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2456404542897668"
+     crossorigin="anonymous"></script>
+    <script src="../assets/js/seed-data.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why do Monopoly GO dice links say already claimed?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Most reward links can be claimed once per account and may expire quickly. RollRadar GO lets players mark links locally so they do not retry the same reward." }
+          },
+          {
+            "@type": "Question",
+            "name": "Are these official Monopoly GO links?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Official sources are labeled as official. Public or community reward links are labeled separately and should be verified in the game." }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">RR</span><span><strong data-i18n="siteName">RollRadar GO</strong><small data-i18n="brandTagline">Monopoly GO tools</small></span></a>
+        <div class="nav-links">
+          <a href="../index.html" data-i18n="navDashboard">Dashboard</a>
+          <a href="events.html" data-i18n="navEvents">Events</a>
+          <a href="stickers.html" data-i18n="navStickers">Stickers</a>
+          <a href="roi-calculator.html" data-i18n="navTools">Tools</a>
+        </div>
+        <label class="language-switch"><span data-i18n="language">Language</span><select id="languageSelect"><option value="en">EN</option><option value="zh-CN">简中</option><option value="zh-TW">繁中</option></select></label>
+      </nav>
+    </header>
+    <main>
+      <section class="page-hero">
+        <div class="section-shell">
+          <p class="eyebrow" data-i18n="diceWorkflow">Daily reward workflow</p>
+          <h1 data-i18n="dicePageTitle">Monopoly GO Free Dice Links Tracker</h1>
+          <p data-i18n="dicePageCopy">Open rewards on your phone, mark already-claimed links, copy links for later, and use the official reward page when public links conflict. Claimed state is saved on this device.</p>
+          <div class="chip-row">
+            <span class="source-pill source-public" data-i18n="diceHeroChip1">Fastest free value</span>
+            <span class="source-pill source-inference" data-i18n="diceHeroChip2">Do this before ROI</span>
+            <span class="source-pill source-community" data-i18n="diceHeroChip3">Repeat visit page</span>
+          </div>
+        </div>
+      </section>
+      <section class="ad-slot" aria-label="Advertisement"><span data-i18n="adLabel">Advertisement</span><ins class="adsbygoogle" data-ad-client="ca-pub-2456404542897668" data-ad-slot="1000000002"></ins></section>
+      <section class="section-shell tool-grid">
+        <article class="tool-card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow" data-i18n="links">Links</p>
+              <h2 data-i18n="claimCopyMark">Claim, copy, mark done</h2>
+            </div>
+            <div class="dice-actions">
+              <button class="btn" id="markAllDice" type="button" data-i18n="markAllDice">Mark all</button>
+              <button class="btn" id="resetClaimed" type="button" data-i18n="reset">Reset</button>
+            </div>
+          </div>
+          <form id="customDiceForm" class="workflow-panel">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow" data-i18n="addOwnLink">Add your link</p>
+                <h2 data-i18n="customDiceTitle">Track a reward link you found</h2>
+              </div>
+              <span class="source-pill source-community" data-source-label="community">Player experience</span>
+            </div>
+            <div class="trade-grid">
+              <label><span data-i18n="customDiceUrl">Reward URL</span><input id="customDiceUrl" type="url" inputmode="url" autocomplete="off" data-i18n-placeholder="customDiceUrlPlaceholder" placeholder="https://mply.io/..."></label>
+              <label><span data-i18n="customDiceLabel">Label</span><input id="customDiceLabel" type="text" autocomplete="off" data-i18n-placeholder="customDiceLabelPlaceholder" placeholder="25 dice from Facebook"></label>
+              <label><span data-i18n="customDiceValue">Dice value</span><input id="customDiceValue" type="number" min="0" inputmode="numeric" value="25"></label>
+            </div>
+            <button class="btn primary" id="addCustomDice" type="submit" data-i18n="saveLink">Save link</button>
+            <div id="customDiceFeedback" class="notice"></div>
+          </form>
+          <div id="diceProgress" class="linked-item"></div>
+          <div id="diceList" class="dice-list"></div>
+          <div id="diceNextSteps" class="action-feed"></div>
+          <div class="workflow-panel">
+            <div class="card-head">
+              <p class="eyebrow" data-i18n="impactPanel">Plan impact</p>
+              <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+            </div>
+            <div id="diceImpactPanel" class="result-list"></div>
+          </div>
+        </article>
+        <aside class="tool-card">
+          <p class="eyebrow" data-i18n="playerNotes">Player notes</p>
+          <h2 data-i18n="bestPractice">Best practice</h2>
+          <p data-i18n="diceBestPractice">Reward links are most useful as a daily habit. Open this page once, claim new links, mark failures as claimed if your account already used them, then move to Quick Wins and event timing.</p>
+          <div class="notice" data-i18n="diceNotice">If a link does not open the app, copy it and open it in your mobile browser. If it still fails, use the official reward page and wait for the next refresh.</div>
+        </aside>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>RollRadar GO</strong><p data-i18n="diceFooterCopy">Fan-made daily tools for Monopoly GO.</p></div><nav><a href="privacy.html" data-i18n="privacy">Privacy</a><a href="contact.html" data-i18n="contact">Contact</a><a href="disclaimer.html" data-i18n="disclaimer">Disclaimer</a></nav></footer>
+    <nav class="mobile-tabbar" aria-label="Mobile quick navigation">
+      <a href="../index.html#dashboard" data-i18n="navDashboard">Dashboard</a>
+      <a class="is-active" href="free-dice.html" data-i18n="navDice">Dice</a>
+      <a href="events.html" data-i18n="navEvents">Events</a>
+      <a href="stickers.html" data-i18n="navStickers">Stickers</a>
+      <a href="roi-calculator.html" data-i18n="roiTool">ROI</a>
+    </nav>
+    <script src="../assets/js/app.js"></script>
+  </body>
+</html>

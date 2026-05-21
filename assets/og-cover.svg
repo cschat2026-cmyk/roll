@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#102820"/>
+  <rect x="72" y="72" width="1056" height="486" rx="32" fill="#f8f4e8"/>
+  <circle cx="940" cy="180" r="72" fill="#f6d365"/>
+  <circle cx="1010" cy="270" r="54" fill="#56d8a3"/>
+  <text x="116" y="220" font-family="Arial, sans-serif" font-size="86" font-weight="800" fill="#102820">RollRadar GO</text>
+  <text x="120" y="310" font-family="Arial, sans-serif" font-size="42" fill="#315247">Free dice, events, stickers, and ROI tools</text>
+  <text x="120" y="420" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#c2422d">Monopoly GO daily command center</text>
+</svg>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monopoly GO Events and Boost Planner - RollRadar GO</title>
+    <meta name="description" content="Monopoly GO event windows, boost timing, Sticker Boom advice, Golden Blitz prep, and practical next actions for daily play.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://rollradargo.com/pages/events.html">
+    <meta property="og:title" content="Monopoly GO Events and Boost Planner">
+    <meta property="og:description" content="Countdowns plus action advice for Monopoly GO daily events and boost windows.">
+    <meta property="og:url" content="https://rollradargo.com/pages/events.html">
+    <meta property="og:image" content="https://rollradargo.com/assets/og-cover.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <script src="../assets/js/config.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2456404542897668"
+     crossorigin="anonymous"></script>
+    <script src="../assets/js/seed-data.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">RR</span><span><strong data-i18n="siteName">RollRadar GO</strong><small data-i18n="brandTagline">Monopoly GO tools</small></span></a>
+        <div class="nav-links"><a href="../index.html" data-i18n="navDashboard">Dashboard</a><a href="free-dice.html" data-i18n="navDice">Dice</a><a href="stickers.html" data-i18n="navStickers">Stickers</a><a href="roi-calculator.html" data-i18n="navTools">Tools</a></div>
+        <label class="language-switch"><span data-i18n="language">Language</span><select id="languageSelect"><option value="en">EN</option><option value="zh-CN">简中</option><option value="zh-TW">繁中</option></select></label>
+      </nav>
+    </header>
+    <main>
+      <section class="page-hero">
+        <div class="section-shell">
+          <p class="eyebrow" data-i18n="eventDecisions">Event decisions</p>
+          <h1 data-i18n="eventsPageTitle">Monopoly GO Events, Boosts, and What To Do Next</h1>
+          <p data-i18n="eventsPageCopy">Countdowns alone are not enough. This page tells you what to save, what to claim, and when an event window is worth spending dice.</p>
+          <div class="chip-row">
+            <span class="source-pill source-official" data-i18n="eventsHeroChip1">Time-sensitive page</span>
+            <span class="source-pill source-community" data-i18n="eventsHeroChip2">Best used with sticker pressure</span>
+            <span class="source-pill source-inference" data-i18n="eventsHeroChip3">Choose one trigger window</span>
+          </div>
+        </div>
+      </section>
+      <section class="section-shell tool-grid mobile-aside-first">
+        <article class="tool-card">
+          <div class="card-head"><div><p class="eyebrow" data-i18n="liveWindows">Live windows</p><h2 data-i18n="activeUpcoming">Active and upcoming</h2></div><span class="source-pill source-community" data-source-label="community">Player experience</span></div>
+          <div id="eventFilters" class="chip-row" aria-label="Event filters"></div>
+          <div id="eventList" class="event-list"></div>
+        </article>
+        <aside class="tool-card">
+          <p class="eyebrow" data-i18n="useWithRoi">Use with ROI</p>
+          <h2 data-i18n="whenSpendDice">When to spend dice</h2>
+          <p data-i18n="spendDiceCopy">Push when a target reward is close, the board state supports the event scoring tile, and a boost improves the expected return. Save dice when the next milestone is far or only cash.</p>
+          <a class="btn primary" href="roi-calculator.html" data-i18n="runRoi">Run ROI calculator</a>
+          <div class="workflow-panel">
+            <p class="eyebrow" data-i18n="eventPlan">Event plan</p>
+            <div id="eventPlanPanel" class="action-feed"></div>
+          </div>
+          <div class="workflow-panel">
+            <div class="card-head">
+              <p class="eyebrow" data-i18n="impactPanel">Plan impact</p>
+              <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
+            </div>
+            <div id="eventImpactPanel" class="result-list"></div>
+          </div>
+          <div class="workflow-panel">
+            <div class="card-head">
+              <p class="eyebrow" data-i18n="blitzPrep">Blitz prep</p>
+              <span class="source-pill source-community" data-source-label="community">Player experience</span>
+            </div>
+            <div class="trade-grid">
+              <label><span data-i18n="goldDupes">Gold dupes ready</span><input id="goldDupesReady" type="number" min="0" inputmode="numeric" value="2"></label>
+              <label><span data-i18n="missingTargets">Missing trade targets</span><input id="missingTradeTargets" type="number" min="0" inputmode="numeric" value="2"></label>
+              <label><span data-i18n="tradePartners">Trade partners lined up</span><input id="tradePartnersReady" type="number" min="0" inputmode="numeric" value="1"></label>
+            </div>
+            <label class="check-row"><input id="tradeScreenshotsReady" type="checkbox"><span data-i18n="tradeScreenshotsReady">Screenshots and list ready</span></label>
+            <div id="blitzPrepResult" class="mini-item calculator-result"></div>
+            <div id="blitzPrepSteps" class="action-feed"></div>
+          </div>
+        </aside>
+      </section>
+      <section class="ad-slot" aria-label="Advertisement"><span data-i18n="adLabel">Advertisement</span><ins class="adsbygoogle" data-ad-client="ca-pub-2456404542897668" data-ad-slot="1000000003"></ins></section>
+    </main>
+    <footer class="site-footer"><div><strong>RollRadar GO</strong><p data-i18n="eventsFooterCopy">Event data uses source labels.</p></div><nav><a href="privacy.html" data-i18n="privacy">Privacy</a><a href="contact.html" data-i18n="contact">Contact</a><a href="disclaimer.html" data-i18n="disclaimer">Disclaimer</a></nav></footer>
+    <nav class="mobile-tabbar" aria-label="Mobile quick navigation">
+      <a href="../index.html#dashboard" data-i18n="navDashboard">Dashboard</a>
+      <a href="free-dice.html" data-i18n="navDice">Dice</a>
+      <a class="is-active" href="events.html" data-i18n="navEvents">Events</a>
+      <a href="stickers.html" data-i18n="navStickers">Stickers</a>
+      <a href="roi-calculator.html" data-i18n="roiTool">ROI</a>
+    </nav>
+    <script src="../assets/js/app.js"></script>
+  </body>
+</html>
