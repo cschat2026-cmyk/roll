@@ -510,6 +510,7 @@ function renderShared() {
   renderEventImpactPanel();
   renderStickerImpactPanel();
   renderRoiImpactPanel();
+  renderDailySessionPanel();
 }
 
 function renderByPage() {
@@ -662,6 +663,110 @@ function renderNextActions() {
         <small>${escapeHtml(item.reason)}</small>
       </div>
       ${actionControl(item)}
+    </div>
+  `).join("");
+  bindActionControls(target);
+}
+
+function dailySessionSteps(context = gatherPlanContext(), plan = updateTodayPlan()) {
+  const diceDone = context.links.length > 0 && context.unclaimedLinks.length === 0 && context.unappliedClaimedDice === 0;
+  const quickWinsDone = Boolean(state.checks?.[1]);
+  const triggerDone = !context.triggerRequired || Boolean(plan.triggerEventId);
+  const stickerDone = Boolean(state.checks?.[2]) || context.openTrades.length > 0 || context.goldBlocked || context.missingStickers <= 3;
+  const roiDone = Boolean(state.roiPlan?.target);
+  return [
+    {
+      id: "dice",
+      done: diceDone,
+      title: diceDone ? t("sessionDiceDone") : t("sessionDiceTitle"),
+      copy: diceDone ? t("sessionDiceDoneCopy") : template(t("sessionDiceCopy"), { count: context.unclaimedLinks.length }),
+      minutes: diceDone ? 0 : 1,
+      control: context.unappliedClaimedDice > 0
+        ? { type: "button", action: "apply-dice-bank", label: t("applyToPlan") }
+        : { type: "link", href: pageLink("free-dice"), label: t("claimDice") }
+    },
+    {
+      id: "quickwins",
+      done: quickWinsDone,
+      title: quickWinsDone ? t("sessionQuickWinsDone") : t("sessionQuickWinsTitle"),
+      copy: quickWinsDone ? t("sessionQuickWinsDoneCopy") : t("sessionQuickWinsCopy"),
+      minutes: quickWinsDone ? 0 : 2,
+      control: { type: "check", index: 1, label: quickWinsDone ? t("checked") : t("markDone") }
+    },
+    {
+      id: "window",
+      done: triggerDone,
+      title: triggerDone ? t("sessionWindowDone") : t("sessionWindowTitle"),
+      copy: triggerDone ? template(t("sessionWindowDoneCopy"), { window: plan.triggerLabel || t("ready") }) : t("sessionWindowCopy"),
+      minutes: triggerDone ? 0 : 1,
+      control: { type: "link", href: pageLink("events"), label: triggerDone ? t("viewEvents") : t("chooseTrigger") }
+    },
+    {
+      id: "stickers",
+      done: stickerDone,
+      title: stickerDone ? t("sessionStickerDone") : t("sessionStickerTitle"),
+      copy: stickerDone ? template(t("sessionStickerDoneCopy"), { missing: context.missingStickers }) : template(t("sessionStickerCopy"), { missing: context.missingStickers }),
+      minutes: stickerDone ? 0 : 2,
+      control: { type: "link", href: pageLink("stickers"), label: t("openStickerPlanner") }
+    },
+    {
+      id: "roi",
+      done: roiDone,
+      title: roiDone ? t("sessionRoiDone") : t("sessionRoiTitle"),
+      copy: roiDone ? template(t("sessionRoiDoneCopy"), { target: state.roiPlan.target, verdict: state.roiPlan.verdict || t("ready") }) : t("sessionRoiCopy"),
+      minutes: roiDone ? 0 : 2,
+      control: { type: "link", href: pageLink("roi-calculator"), label: t("runRoi") }
+    }
+  ];
+}
+
+function updateDailyVisitStats(doneCount, total) {
+  const currentDay = gameDayKey();
+  const stats = state.dailySession || {};
+  if (stats.lastSeenDay !== currentDay) {
+    const previous = stats.lastSeenDay ? new Date(`${stats.lastSeenDay}T00:00:00Z`) : null;
+    const current = new Date(`${currentDay}T00:00:00Z`);
+    const dayDiff = previous ? Math.round((current - previous) / 86400000) : 0;
+    stats.streak = dayDiff === 1 ? (Number(stats.streak) || 0) + 1 : 1;
+    stats.firstSeenAt = stats.firstSeenAt || new Date().toISOString();
+    stats.lastSeenDay = currentDay;
+  }
+  stats.bestDone = Math.max(Number(stats.bestDone) || 0, doneCount);
+  stats.total = total;
+  stats.updatedAt = new Date().toISOString();
+  state.dailySession = stats;
+  saveState();
+  return stats;
+}
+
+function renderDailySessionPanel() {
+  const target = document.getElementById("dailySessionPanel");
+  if (!target) return;
+  const context = gatherPlanContext();
+  const plan = updateTodayPlan() || {};
+  const steps = dailySessionSteps(context, plan);
+  const doneCount = steps.filter((step) => step.done).length;
+  const remainingMinutes = steps.reduce((sum, step) => sum + (step.done ? 0 : step.minutes), 0);
+  const stats = updateDailyVisitStats(doneCount, steps.length);
+  const score = document.getElementById("dailySessionScore");
+  const streak = document.getElementById("dailySessionStreak");
+  const copy = document.getElementById("dailySessionCopy");
+  const bar = document.getElementById("dailySessionProgress");
+  if (score) score.textContent = `${doneCount}/${steps.length}`;
+  if (streak) streak.textContent = template(t("dailySessionStreak"), { days: stats.streak || 1 });
+  if (copy) copy.textContent = remainingMinutes > 0
+    ? template(t("dailySessionRemaining"), { minutes: remainingMinutes })
+    : t("dailySessionComplete");
+  if (bar) bar.style.width = `${Math.max(4, Math.round((doneCount / steps.length) * 100))}%`;
+  target.innerHTML = steps.map((step, index) => `
+    <div class="session-step ${step.done ? "is-done" : ""}">
+      <div class="session-index">${String(index + 1).padStart(2, "0")}</div>
+      <div>
+        <strong>${escapeHtml(step.title)}</strong>
+        <span>${escapeHtml(step.copy)}</span>
+        <small>${escapeHtml(step.done ? t("completed") : template(t("sessionTimeNeeded"), { minutes: step.minutes }))}</small>
+      </div>
+      ${actionControl({ control: step.control })}
     </div>
   `).join("");
   bindActionControls(target);

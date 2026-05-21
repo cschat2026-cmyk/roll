@@ -591,6 +591,149 @@ a:focus-visible {
   margin: 30px auto;
 }
 
+.daily-session-card {
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(15, 51, 89, 0.1);
+  border-radius: 18px;
+  padding: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(242, 248, 255, 0.96)),
+    linear-gradient(90deg, rgba(47, 225, 196, 0.1), rgba(255, 215, 89, 0.12));
+  box-shadow: var(--shadow-md);
+}
+
+.session-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.session-head h2 {
+  margin: 4px 0 6px;
+  font-family: "RollRadar Display", sans-serif;
+  font-size: clamp(1.35rem, 2.6vw, 2.1rem);
+  line-height: 1.04;
+}
+
+.session-head p {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.session-score {
+  display: grid;
+  justify-items: end;
+  min-width: 124px;
+  border: 1px solid rgba(18, 48, 74, 0.1);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.session-score strong {
+  color: var(--ink);
+  font-family: "RollRadar Display", sans-serif;
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.session-score span {
+  margin-top: 4px;
+  color: var(--ink-faint);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.session-progress {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(18, 48, 74, 0.1);
+}
+
+.session-progress span {
+  display: block;
+  width: 4%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue), var(--teal), var(--gold));
+  transition: width 160ms ease;
+}
+
+.session-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.session-step {
+  display: grid;
+  grid-template-rows: auto minmax(118px, 1fr) auto;
+  gap: 9px;
+  min-width: 0;
+  border: 1px solid rgba(18, 48, 74, 0.1);
+  border-radius: 16px;
+  padding: 12px;
+  background: #fff;
+}
+
+.session-step.is-done {
+  border-color: rgba(56, 201, 135, 0.28);
+  background: #f2fff8;
+}
+
+.session-index {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 999px;
+  background: #eef3ff;
+  color: var(--blue);
+  font-family: "RollRadar Display", sans-serif;
+  font-size: 0.82rem;
+}
+
+.session-step.is-done .session-index {
+  background: #dff8ed;
+  color: #16734f;
+}
+
+.session-step strong,
+.session-step span,
+.session-step small {
+  display: block;
+}
+
+.session-step strong {
+  margin-bottom: 5px;
+  line-height: 1.18;
+}
+
+.session-step span {
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  line-height: 1.42;
+}
+
+.session-step small {
+  margin-top: 7px;
+  color: var(--ink-faint);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.session-step .btn {
+  width: 100%;
+  min-height: 40px;
+  white-space: normal;
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.18fr) minmax(260px, 0.91fr) minmax(260px, 0.91fr);
@@ -1231,6 +1374,7 @@ label span {
 @media (max-width: 1024px) {
   .hero-shell,
   .dashboard-grid,
+  .session-grid,
   .two-column,
   .seo-grid,
   .tool-grid {
@@ -1430,6 +1574,29 @@ label span {
 
   .section-shell {
     margin: 20px auto;
+  }
+
+  .daily-session-card {
+    border-radius: 16px;
+    padding: 14px;
+  }
+
+  .session-head {
+    display: grid;
+    gap: 12px;
+  }
+
+  .session-score {
+    width: 100%;
+    justify-items: start;
+  }
+
+  .session-score span {
+    text-align: left;
+  }
+
+  .session-step {
+    grid-template-rows: auto;
   }
 
   .dashboard-grid,
