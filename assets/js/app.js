@@ -3,6 +3,10 @@ const DATA_URL = new URL("../../data/site-data.json", SCRIPT_URL);
 const I18N_URL = new URL("../../data/i18n.json", SCRIPT_URL);
 const STORAGE_KEY = "rollradar-go-state-v1";
 const GAME_DAY_RESET_HOUR_UTC = 13;
+const AD_STATE = {
+  renderedKeys: new Set(),
+  activeProvider: "ezoic"
+};
 
 const state = loadState();
 let siteData = null;
@@ -334,6 +338,7 @@ async function init() {
   applyLanguage(currentLang);
   ensureDailyReset();
   bindLanguage();
+  bindAdProviderRefresh();
   hydrateSavedInputs();
   renderShared();
   renderByPage();
@@ -365,6 +370,95 @@ async function refreshContentNow() {
   } catch (error) {
     stampFreshness("seed");
     console.info("Using bundled seed data because live JSON refresh is unavailable.", error);
+  }
+}
+
+function adConfig() {
+  return window.RollRadarConfig || {};
+}
+
+function adBootstrapState() {
+  return window.RollRadarAdsBoot || {};
+}
+
+function currentAdProvider() {
+  const runtime = adBootstrapState();
+  const configured = String(adConfig().adProvider || "").toLowerCase();
+  const provider = String(runtime.activeProvider || configured || "ezoic").toLowerCase();
+  return provider === "adsense" ? "adsense" : "ezoic";
+}
+
+function bindAdProviderRefresh() {
+  window.addEventListener("rollradar:ads-provider-changed", () => {
+    AD_STATE.renderedKeys.clear();
+    document.querySelectorAll("[data-ad-key]").forEach((slot) => {
+      delete slot.dataset.renderedProvider;
+      delete slot.dataset.renderedKey;
+    });
+    renderAdSlots();
+  });
+}
+
+function renderAdSlots() {
+  const slots = document.querySelectorAll("[data-ad-key]");
+  if (!slots.length) return;
+  AD_STATE.activeProvider = currentAdProvider();
+  slots.forEach((slot) => renderAdSlot(slot));
+}
+
+function renderAdSlot(slotRoot) {
+  const slotKey = slotRoot.dataset.adKey;
+  const mount = slotRoot.querySelector("[data-ad-mount]");
+  const placement = adConfig().adPlacements?.[slotKey];
+  if (!slotKey || !mount || !placement) return;
+  const provider = currentAdProvider();
+  if (
+    slotRoot.dataset.renderedProvider === provider &&
+    slotRoot.dataset.renderedKey === slotKey &&
+    mount.childElementCount > 0
+  ) {
+    return;
+  }
+  slotRoot.dataset.adProvider = provider;
+  mount.innerHTML = "";
+
+  if (provider === "ezoic" && Number.isFinite(Number(placement.ezoicSlot))) {
+    renderEzoicSlot(mount, Number(placement.ezoicSlot), slotKey);
+    return;
+  }
+  if (provider === "adsense" && placement.adsenseSlot && adConfig().adsenseClient) {
+    renderAdsenseSlot(mount, placement.adsenseSlot, slotKey);
+    return;
+  }
+  mount.innerHTML = `<div class="ad-slot-note">${escapeHtml(t("adFallbackNote") || "Ad space is preparing.")}</div>`;
+}
+
+function renderEzoicSlot(mount, slotId, slotKey) {
+  mount.innerHTML = `<div id="ezoic-pub-ad-placeholder-${slotId}"></div>`;
+  const runtime = window.ezstandalone;
+  if (!runtime?.cmd?.push || typeof runtime.showAds !== "function") {
+    mount.insertAdjacentHTML("beforeend", `<div class="ad-slot-note">${escapeHtml(t("adLoadingEzoic") || "Loading optimized ad placement...")}</div>`);
+    return;
+  }
+  if (AD_STATE.renderedKeys.has(`ezoic:${slotKey}`)) return;
+  AD_STATE.renderedKeys.add(`ezoic:${slotKey}`);
+  mount.closest("[data-ad-key]")?.setAttribute("data-rendered-provider", "ezoic");
+  mount.closest("[data-ad-key]")?.setAttribute("data-rendered-key", slotKey);
+  runtime.cmd.push(function showEzoicSlot() {
+    runtime.showAds(slotId);
+  });
+}
+
+function renderAdsenseSlot(mount, adSlot, slotKey) {
+  mount.innerHTML = `<ins class="adsbygoogle" style="display:block" data-ad-client="${escapeHtmlAttr(adConfig().adsenseClient)}" data-ad-slot="${escapeHtmlAttr(adSlot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
+  if (AD_STATE.renderedKeys.has(`adsense:${slotKey}`)) return;
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    AD_STATE.renderedKeys.add(`adsense:${slotKey}`);
+    mount.closest("[data-ad-key]")?.setAttribute("data-rendered-provider", "adsense");
+    mount.closest("[data-ad-key]")?.setAttribute("data-rendered-key", slotKey);
+  } catch (error) {
+    console.warn("AdSense slot push failed", error);
   }
 }
 
@@ -476,6 +570,7 @@ function resolveLocalHref(href) {
 }
 
 function renderShared() {
+  renderAdSlots();
   const diceLinkCount = document.getElementById("diceLinkCount");
   const eventCount = document.getElementById("eventCount");
   const savedPlanStatus = document.getElementById("savedPlanStatus");

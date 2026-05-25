@@ -1,7 +1,7 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const [domainArg, adsenseArg, analyticsArg] = process.argv.slice(2);
+const [domainArg, adsenseArg, analyticsArg, ezoicManagerArg] = process.argv.slice(2);
 
 if (!domainArg || !domainArg.startsWith("https://")) {
   console.error("Usage: node tools/configure-site.mjs https://yourdomain.com ca-pub-XXXX G-XXXX");
@@ -9,14 +9,18 @@ if (!domainArg || !domainArg.startsWith("https://")) {
 }
 
 const domain = domainArg.replace(/\/$/, "");
+const hostname = new URL(domain).hostname.replace(/^www\./, "");
 const adsense = adsenseArg || "ca-pub-2456404542897668";
 const analytics = analyticsArg || "G-REPLACE_ME";
+const ezoicManager = ezoicManagerArg || "19390";
 const files = await listFiles(".");
 
 for (const file of files) {
   const before = await readFile(file, "utf8");
   const after = before
     .replaceAll("https://rollradargo.com", domain)
+    .replaceAll("rollradargo.com", hostname)
+    .replaceAll("/19390/", `/${ezoicManager}/`)
     .replaceAll("ca-pub-2456404542897668", adsense)
     .replaceAll("pub-2456404542897668", adsense.replace("ca-", ""))
     .replaceAll("G-REPLACE_ME", analytics);
