@@ -3,13 +3,13 @@ window.RollRadarSeed = {
     "meta": {
       "brand": "RollRadar GO",
       "game": "Monopoly GO",
-      "productionDomain": "https://rollradargo.com",
+      "productionDomain": "https://rich20.top",
       "adsenseClient": "ca-pub-2456404542897668",
       "analyticsId": "G-REPLACE_ME",
       "updateCadenceHours": 6,
-      "updatedAt": "2026-05-21T02:20:00.000Z",
-      "nextRefreshAt": "2026-05-21T08:20:00.000Z",
-      "updateNote": "May 21 update: Quick Wins follows the 13:00 UTC game-day reset, dice link handling is versioned by active reward link, spend triggers exclude daily utility tasks, and watch-only community items require in-game confirmation before they influence decisions.",
+      "updatedAt": "2026-05-25T07:40:00.000Z",
+      "nextRefreshAt": "2026-05-25T13:40:00.000Z",
+      "updateNote": "May 25 review: stale reward links and expired event windows were pruned, refresh status now gates player-facing timing decisions, and Quick Wins reset follows the 8:00 AM America/New_York game-day anchor with DST-aware handling.",
       "sourcePolicy": {
         "official": "Official information from Scopely or in-game screens.",
         "public": "Publicly visible web pages, creator posts, or published reward lists.",
@@ -35,26 +35,6 @@ window.RollRadarSeed = {
       }
     ],
     "diceLinks": [
-      {
-        "id": "daily-2",
-        "label": "25 dice community reward",
-        "dice": 25,
-        "status": "check",
-        "claimUrl": "https://www.monopolygo.com/benefits",
-        "expiresAt": "2026-05-22T23:59:00+08:00",
-        "source": "community",
-        "note": "Community-shared benefit route reported on May 21. Open on your phone, verify in game, then mark handled."
-      },
-      {
-        "id": "daily-3",
-        "label": "Daily active dice check",
-        "dice": 25,
-        "status": "check",
-        "claimUrl": "https://www.monopolygo.com/rewards",
-        "expiresAt": "2026-05-22T23:59:00+08:00",
-        "source": "public",
-        "note": "Public dice-link pages update often and links expire quickly. Use this as today's second check before event spending."
-      },
       {
         "id": "backup-official",
         "label": "Official reward page",
@@ -89,141 +69,7 @@ window.RollRadarSeed = {
         "reason": "Only attempt with a healthy dice bank or a strong event/boost overlap."
       }
     ],
-    "events": [
-      {
-        "id": "quick-wins",
-        "name": "Quick Wins",
-        "type": "daily",
-        "status": "active",
-        "startsAt": "2026-05-21T13:00:00.000Z",
-        "endsAt": "2026-05-22T13:00:00.000Z",
-        "source": "official",
-        "bestFor": [
-          "sticker packs",
-          "daily progress",
-          "low dice accounts"
-        ],
-        "actions": [
-          "Use this as a daily blocker, not a dice-spend trigger.",
-          "Finish the three tasks before judging event ROI, because packs and small rewards change the plan.",
-          "The site resets this checklist on the 13:00 UTC game-day anchor; if the in-game timer differs, follow the game."
-        ]
-      },
-      {
-        "id": "puppet-party",
-        "name": "Puppet Party",
-        "type": "main",
-        "status": "active",
-        "startsAt": "2026-05-21T01:00:00+08:00",
-        "endsAt": "2026-05-22T01:00:00+08:00",
-        "source": "public",
-        "bestFor": [
-          "Peg-E tokens",
-          "racing flags",
-          "corner scoring"
-        ],
-        "actions": [
-          "Use corner-tile board position before raising multiplier.",
-          "Treat milestone 32 as the practical mid-stop if you need flags without going all in.",
-          "Send the chosen point target to ROI before spending dice."
-        ]
-      },
-      {
-        "id": "peg-e-prize-drop",
-        "name": "Peg-E Prize Drop",
-        "type": "special",
-        "status": "active",
-        "startsAt": "2026-05-21T01:00:00+08:00",
-        "endsAt": "2026-05-22T00:00:00+08:00",
-        "source": "public",
-        "bestFor": [
-          "sticker packs",
-          "free rolls",
-          "sticker value"
-        ],
-        "actions": [
-          "Collect tokens from Puppet Party and tournament rewards before dropping.",
-          "Spend tokens in one focused session so prize paths are easier to judge.",
-          "If dice bank is low, use Peg-E as a subsidy rather than chasing deep milestones."
-        ]
-      },
-      {
-        "id": "aladdin-racers",
-        "name": "Aladdin Racers",
-        "type": "race",
-        "status": "active",
-        "startsAt": "2026-05-21T01:00:00+08:00",
-        "endsAt": "2026-05-25T04:00:00+08:00",
-        "source": "public",
-        "bestFor": [
-          "team racing",
-          "racing flags",
-          "race dice"
-        ],
-        "actions": [
-          "Do not spend all flags before your team agrees on a target.",
-          "Add flags from Quick Wins, shop gifts, Puppet Party, and tournaments before judging the gap.",
-          "If teammates are inactive, protect dice and only push shared checkpoints."
-        ]
-      },
-      {
-        "id": "sticker-boom",
-        "name": "Sticker Boom Watch",
-        "type": "boost",
-        "status": "watch",
-        "startsAt": "2026-05-21T20:00:00+08:00",
-        "endsAt": "2026-05-22T23:00:00+08:00",
-        "source": "community",
-        "bestFor": [
-          "opening vaults",
-          "large sticker packs",
-          "album pushes"
-        ],
-        "actions": [
-          "Keep vaults and large packs parked until an in-game boost appears.",
-          "If no boost appears, finish trades first and keep packs unopened.",
-          "Use this as a watch trigger, not a confirmed official window."
-        ]
-      },
-      {
-        "id": "golden-blitz-watch",
-        "name": "Golden Blitz Watch",
-        "type": "trade",
-        "status": "watch",
-        "startsAt": "2026-05-21T20:00:00+08:00",
-        "endsAt": "2026-05-22T20:00:00+08:00",
-        "source": "community",
-        "bestFor": [
-          "gold sticker trades",
-          "album completion",
-          "friend trading"
-        ],
-        "actions": [
-          "Prepare screenshots of duplicate gold stickers and missing targets.",
-          "Do not burn wild cards on rumored Blitz stickers until the in-game pair is confirmed.",
-          "Save trade partner notes locally before the window opens."
-        ]
-      },
-      {
-        "id": "high-roller",
-        "name": "High Roller Watch",
-        "type": "boost",
-        "status": "watch",
-        "startsAt": "2026-05-21T21:00:00+08:00",
-        "endsAt": "2026-05-21T21:10:00+08:00",
-        "source": "community",
-        "bestFor": [
-          "large dice banks",
-          "top event milestones",
-          "tournament push"
-        ],
-        "actions": [
-          "Use only if your dice bank can absorb variance.",
-          "Pair with corner-tile position during Puppet Party or with a race-flag target.",
-          "Stop when the next milestone cost exceeds the dice return target."
-        ]
-      }
-    ],
+    "events": [],
     "milestones": [
       {
         "eventId": "puppet-party",
@@ -592,6 +438,13 @@ window.RollRadarSeed = {
     ],
     "changelog": [
       {
+        "date": "2026-05-25",
+        "items": [
+          "May 25 review: stale reward links and expired event windows were pruned, refresh status now gates player-facing timing decisions, and Quick Wins reset follows the 8:00 AM America/New_York game-day anchor with DST-aware handling.",
+          "Active content after pruning: 1 reward routes, 0 event windows. Removed 2 expired reward routes and 7 old event windows."
+        ]
+      },
+      {
         "date": "2026-05-21",
         "items": [
           "May 21 source review: dice, Puppet Party, Peg-E, Aladdin Racers, and sticker watch items checked. Puppet Party now uses a full 62-step public ladder; community watch items remain preparation-only until verified in game.",
@@ -654,7 +507,8 @@ window.RollRadarSeed = {
       "email": "cschat2026@gmail.com",
       "dailyControl": "Daily Monopoly GO control room",
       "checking": "Checking update status...",
-      "seedMode": "using cached data",
+      "seedMode": "using bundled seed data",
+      "cacheMode": "using last successful live cache",
       "rewardLinks": "Reward links",
       "dicePreviewValue": "{dice} dice route",
       "dicePreviewOfficial": "Official reward route",
@@ -692,7 +546,7 @@ window.RollRadarSeed = {
       "checkStop": "Stop event pushes when the next reward is below your dice target.",
       "dailyResetTitle": "Game-day checklist: {done}/{total} done",
       "dailyResetCopy": "Resets at {time}; about {left}. Time zone: {zone}.",
-      "dailyResetSource": "Uses 13:00 UTC as the game-day reset anchor. Always follow the in-game timer if it differs.",
+      "dailyResetSource": "Quick Wins is tracked against the 8:00 AM America/New_York game-day anchor. Daylight saving time can shift the UTC equivalent, so always follow the in-game timer if it differs.",
       "resetToday": "Reset today",
       "localTime": "Local time",
       "actionClaimTitle": "Claim and clean up dice links",
@@ -774,6 +628,11 @@ window.RollRadarSeed = {
       "freshnessStaleCopy": "This data is older than the normal review window. Treat community watch items carefully.",
       "todayUsable": "Today usable",
       "todayUsableCopy": "{dice} reward routes and {events} confirmed spend windows are usable now.",
+      "todayUsableStaleCopy": "Only {dice} reward routes and {events} confirmed spend windows are safe to show until a fresh check completes.",
+      "noLiveEventsTitle": "No current event windows are safe to show yet.",
+      "planTitleRefresh": "Refresh before acting.",
+      "planSummaryRefresh": "This timing data is outside the normal review window. Run a fresh check before using event timers, Sticker Boom watches, or ROI calls.",
+      "planBlockRefresh": "Today's event timing needs a fresh review first.",
       "watchConfirm": "Confirm in game",
       "watchConfirmCopy": "{count} watch items need in-game confirmation before spending: {events}.",
       "yes": "Yes",
@@ -784,7 +643,9 @@ window.RollRadarSeed = {
       "privacyStoreTitle": "Information we store",
       "privacyStoreCopy": "The site stores planner inputs, claimed-link state, checklist progress, and trade notes in your browser local storage. This data stays on your device unless you clear browser data.",
       "privacyAdsTitle": "Analytics and advertising",
-      "privacyAdsCopy": "We reserve space for privacy-conscious analytics and Google AdSense. Advertising partners may use cookies or similar technologies after ad code is enabled.",
+      "privacyAdsCopy": "RollRadar GO may serve ads through Ezoic and Google AdSense. Those partners may use cookies, consent tools, and similar technologies to optimize ad delivery, measurement, and revenue once advertising is active.",
+      "adFallbackNote": "Ad space is preparing.",
+      "adLoadingEzoic": "Loading optimized ad placement...",
       "privacyLinksTitle": "Third-party links",
       "privacyLinksCopy": "Reward links, official game pages, Discord, Facebook, and community sources may have their own privacy practices. Review those services before sharing personal information.",
       "privacyRequestsTitle": "Requests",
@@ -829,7 +690,7 @@ window.RollRadarSeed = {
       "roiWaitAdvice": "Only push during High Roller, Mega Heist, or when the reward is a sticker pack you need.",
       "roiStopAdvice": "The dice gap is too expensive. Wait for better boosts or a closer reward.",
       "checkDiceImpact": "Unlocks the free-dice branch and removes repeated dead-link attempts.",
-      "checkQuickWinsImpact": "Uses the 13:00 UTC game-day reset. Completing this clears the daily blocker for the current game day.",
+      "checkQuickWinsImpact": "Uses the 8:00 AM America/New_York game-day reset. Completing this clears the daily blocker for the current game day.",
       "checkStickerBoomImpact": "Controls whether sticker packs and vaults should be held or opened.",
       "checkStopImpact": "Requires a saved ROI stop line or an explicit target decision; do not mark it just because the card exists.",
       "actionClaimReason": "Free dice has the highest return and lowest risk; do it before spending.",
@@ -1259,7 +1120,8 @@ window.RollRadarSeed = {
       "email": "cschat2026@gmail.com",
       "dailyControl": "Monopoly GO 每日控制台",
       "checking": "正在检查更新状态...",
-      "seedMode": "使用缓存数据",
+      "seedMode": "使用内置种子数据",
+      "cacheMode": "使用上次成功拉取的缓存",
       "rewardLinks": "奖励链接",
       "dicePreviewValue": "{dice} 骰子入口",
       "dicePreviewOfficial": "官方奖励入口",
@@ -1297,7 +1159,7 @@ window.RollRadarSeed = {
       "checkStop": "当下个奖励不值骰子消耗时，停止冲活动。",
       "dailyResetTitle": "游戏日清单：已完成 {done}/{total}",
       "dailyResetCopy": "将在 {time} 重置；约 {left}。当前时区：{zone}。",
-      "dailyResetSource": "按 13:00 UTC 作为游戏日重置锚点；若游戏内倒计时不同，以游戏内为准。",
+      "dailyResetSource": "Quick Wins 按 America/New_York 时区上午 8:00 的游戏日锚点追踪。夏令时会影响对应 UTC 时间；若游戏内倒计时不同，以游戏内为准。",
       "resetToday": "重置今日",
       "localTime": "本地时间",
       "actionClaimTitle": "领取并清理骰子链接",
@@ -1379,6 +1241,11 @@ window.RollRadarSeed = {
       "freshnessStaleCopy": "这份数据超过正常复核窗口。社区观察项请务必以游戏内显示为准。",
       "todayUsable": "今日可用",
       "todayUsableCopy": "现在可用 {dice} 个奖励入口和 {events} 个已确认消耗窗口。",
+      "todayUsableStaleCopy": "在完成新一轮检查前，当前仅安全显示 {dice} 个奖励入口和 {events} 个已确认消耗窗口。",
+      "noLiveEventsTitle": "当前还没有可安全展示的活动窗口。",
+      "planTitleRefresh": "先刷新再行动。",
+      "planSummaryRefresh": "这份时效数据已经超出正常复核窗口。先做新一轮检查，再参考活动计时、Sticker Boom 观察和 ROI 判断。",
+      "planBlockRefresh": "今天的活动时间需要先重新复核。",
       "watchConfirm": "进游戏确认",
       "watchConfirmCopy": "{count} 个观察项需要进游戏确认后再花资源：{events}。",
       "yes": "是",
@@ -1389,7 +1256,9 @@ window.RollRadarSeed = {
       "privacyStoreTitle": "我们保存的信息",
       "privacyStoreCopy": "本站会把规划输入、已领取链接状态、每日清单进度和交易备注保存在你的浏览器本地存储中。除非你清除浏览器数据，否则这些内容只留在本设备。",
       "privacyAdsTitle": "统计与广告",
-      "privacyAdsCopy": "本站预留了隐私友好的统计和 Google AdSense 广告位置。广告代码启用后，广告合作方可能使用 Cookie 或类似技术。",
+      "privacyAdsCopy": "RollRadar GO 可能通过 Ezoic 与 Google AdSense 展示广告。广告启用后，这些合作方可能使用 Cookie、同意管理工具或类似技术来优化广告展示、统计与收益。",
+      "adFallbackNote": "广告位正在准备中。",
+      "adLoadingEzoic": "正在加载优化广告位...",
       "privacyLinksTitle": "第三方链接",
       "privacyLinksCopy": "奖励链接、官方游戏页、Discord、Facebook 和社区来源可能有各自的隐私规则。分享个人信息前请先查看对应服务的政策。",
       "privacyRequestsTitle": "请求",
@@ -1434,7 +1303,7 @@ window.RollRadarSeed = {
       "roiWaitAdvice": "只在 High Roller、Mega Heist，或你确实需要贴纸包时推进。",
       "roiStopAdvice": "骰子缺口太贵。等待更好的加成或更近的奖励。",
       "checkDiceImpact": "解锁免费骰子分支，避免重复点已经失效或领过的链接。",
-      "checkQuickWinsImpact": "按 13:00 UTC 游戏日重置。完成后会清掉当前游戏日的每日任务阻塞。",
+      "checkQuickWinsImpact": "按 America/New_York 时区上午 8:00 的游戏日重置。完成后会清掉当前游戏日的每日任务阻塞。",
       "checkStickerBoomImpact": "决定贴纸包和保险箱现在开，还是继续等窗口。",
       "checkStopImpact": "需要已保存 ROI 止损线或明确目标判断；不能因为卡片存在就随手勾。",
       "actionClaimReason": "免费骰子收益最高、风险最低，应该先做。",
@@ -1864,7 +1733,8 @@ window.RollRadarSeed = {
       "email": "cschat2026@gmail.com",
       "dailyControl": "Monopoly GO 每日控制台",
       "checking": "正在檢查更新狀態...",
-      "seedMode": "使用快取資料",
+      "seedMode": "使用內建種子資料",
+      "cacheMode": "使用上次成功拉取的快取",
       "rewardLinks": "獎勵連結",
       "dicePreviewValue": "{dice} 骰子入口",
       "dicePreviewOfficial": "官方獎勵入口",
@@ -1892,7 +1762,7 @@ window.RollRadarSeed = {
       "checkStop": "當下一個獎勵不值骰子消耗時，停止衝活動。",
       "dailyResetTitle": "遊戲日清單：已完成 {done}/{total}",
       "dailyResetCopy": "將在 {time} 重置；約 {left}。目前時區：{zone}。",
-      "dailyResetSource": "按 13:00 UTC 作為遊戲日重置錨點；若遊戲內倒數不同，以遊戲內為準。",
+      "dailyResetSource": "Quick Wins 按 America/New_York 時區上午 8:00 的遊戲日錨點追蹤。夏令時會影響對應 UTC 時間；若遊戲內倒數不同，以遊戲內為準。",
       "resetToday": "重置今日",
       "localTime": "本地時間",
       "actionClaimTitle": "領取並清理骰子連結",
@@ -1984,6 +1854,11 @@ window.RollRadarSeed = {
       "freshnessStaleCopy": "這份資料超過正常複核窗口。社群觀察項請務必以遊戲內顯示為準。",
       "todayUsable": "今日可用",
       "todayUsableCopy": "現在可用 {dice} 個獎勵入口和 {events} 個已確認消耗窗口。",
+      "todayUsableStaleCopy": "在完成新一輪檢查前，目前僅安全顯示 {dice} 個獎勵入口和 {events} 個已確認消耗窗口。",
+      "noLiveEventsTitle": "目前還沒有可安全展示的活動窗口。",
+      "planTitleRefresh": "先刷新再行動。",
+      "planSummaryRefresh": "這份時效資料已超出正常複核窗口。先做新一輪檢查，再參考活動計時、Sticker Boom 觀察和 ROI 判斷。",
+      "planBlockRefresh": "今天的活動時間需要先重新複核。",
       "watchConfirm": "進遊戲確認",
       "watchConfirmCopy": "{count} 個觀察項需要進遊戲確認後再花資源：{events}。",
       "yes": "是",
@@ -1994,7 +1869,9 @@ window.RollRadarSeed = {
       "privacyStoreTitle": "我們保存的資訊",
       "privacyStoreCopy": "本站會把規劃輸入、已領取連結狀態、每日清單進度與交易備註保存在你的瀏覽器本地儲存中。除非你清除瀏覽器資料，否則這些內容只留在本設備。",
       "privacyAdsTitle": "統計與廣告",
-      "privacyAdsCopy": "本站預留了隱私友好的統計和 Google AdSense 廣告位置。廣告程式碼啟用後，廣告合作方可能使用 Cookie 或類似技術。",
+      "privacyAdsCopy": "RollRadar GO 可能透過 Ezoic 與 Google AdSense 顯示廣告。廣告啟用後，這些合作方可能使用 Cookie、同意管理工具或類似技術來優化廣告展示、統計與收益。",
+      "adFallbackNote": "廣告位正在準備中。",
+      "adLoadingEzoic": "正在載入最佳化廣告位...",
       "privacyLinksTitle": "第三方連結",
       "privacyLinksCopy": "獎勵連結、官方遊戲頁、Discord、Facebook 和社群來源可能有各自的隱私規則。分享個人資訊前請先查看對應服務的政策。",
       "privacyRequestsTitle": "請求",
@@ -2039,7 +1916,7 @@ window.RollRadarSeed = {
       "roiWaitAdvice": "只在 High Roller、Mega Heist，或你確實需要貼紙包時推進。",
       "roiStopAdvice": "骰子缺口太貴。等待更好的加成或更近的獎勵。",
       "checkDiceImpact": "解鎖免費骰子分支，避免重複點已失效或領過的連結。",
-      "checkQuickWinsImpact": "按 13:00 UTC 遊戲日重置。完成後會清掉目前遊戲日的每日任務阻塞。",
+      "checkQuickWinsImpact": "按 America/New_York 時區上午 8:00 的遊戲日重置。完成後會清掉目前遊戲日的每日任務阻塞。",
       "checkStickerBoomImpact": "決定貼紙包和保險箱現在開，還是繼續等窗口。",
       "checkStopImpact": "需要已保存 ROI 止損線或明確目標判斷；不能因為卡片存在就隨手勾。",
       "actionClaimReason": "免費骰子收益最高、風險最低，應該先做。",

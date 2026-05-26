@@ -4,7 +4,7 @@ window.RollRadarConfig = window.RollRadarConfig || {
   adsenseEnabled: true,
   adsenseClient: "ca-pub-2456404542897668",
   ezoicEnabled: true,
-  ezoicDomain: "rollradargo.com",
+  ezoicDomain: "rich20.top",
   ezoicAdsTxtManagerId: "19390",
   ezoicVerificationToken: "",
   // Keep this false until the live Ezoic placeholder IDs from the dashboard are confirmed.
@@ -18,5 +18,5 @@ window.RollRadarConfig = window.RollRadarConfig || {
     "roi-inline": { adsenseSlot: "1000000005", ezoicSlot: 105 }
   },
   analyticsId: "G-REPLACE_ME",
-  domain: "https://rollradargo.com"
+  domain: "https://rich20.top"
 };

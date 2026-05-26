@@ -2,13 +2,13 @@
   "meta": {
     "brand": "RollRadar GO",
     "game": "Monopoly GO",
-    "productionDomain": "https://rollradargo.com",
+    "productionDomain": "https://rich20.top",
     "adsenseClient": "ca-pub-2456404542897668",
     "analyticsId": "G-REPLACE_ME",
     "updateCadenceHours": 6,
-    "updatedAt": "2026-05-21T02:20:00.000Z",
-    "nextRefreshAt": "2026-05-21T08:20:00.000Z",
-    "updateNote": "May 21 update: Quick Wins follows the 13:00 UTC game-day reset, dice link handling is versioned by active reward link, spend triggers exclude daily utility tasks, and watch-only community items require in-game confirmation before they influence decisions.",
+    "updatedAt": "2026-05-25T07:40:00.000Z",
+    "nextRefreshAt": "2026-05-25T13:40:00.000Z",
+    "updateNote": "May 25 review: stale reward links and expired event windows were pruned, refresh status now gates player-facing timing decisions, and Quick Wins reset follows the 8:00 AM America/New_York game-day anchor with DST-aware handling.",
     "sourcePolicy": {
       "official": "Official information from Scopely or in-game screens.",
       "public": "Publicly visible web pages, creator posts, or published reward lists.",
@@ -34,26 +34,6 @@
     }
   ],
   "diceLinks": [
-    {
-      "id": "daily-2",
-      "label": "25 dice community reward",
-      "dice": 25,
-      "status": "check",
-      "claimUrl": "https://www.monopolygo.com/benefits",
-      "expiresAt": "2026-05-22T23:59:00+08:00",
-      "source": "community",
-      "note": "Community-shared benefit route reported on May 21. Open on your phone, verify in game, then mark handled."
-    },
-    {
-      "id": "daily-3",
-      "label": "Daily active dice check",
-      "dice": 25,
-      "status": "check",
-      "claimUrl": "https://www.monopolygo.com/rewards",
-      "expiresAt": "2026-05-22T23:59:00+08:00",
-      "source": "public",
-      "note": "Public dice-link pages update often and links expire quickly. Use this as today's second check before event spending."
-    },
     {
       "id": "backup-official",
       "label": "Official reward page",
@@ -88,141 +68,7 @@
       "reason": "Only attempt with a healthy dice bank or a strong event/boost overlap."
     }
   ],
-  "events": [
-    {
-      "id": "quick-wins",
-      "name": "Quick Wins",
-      "type": "daily",
-      "status": "active",
-      "startsAt": "2026-05-21T13:00:00.000Z",
-      "endsAt": "2026-05-22T13:00:00.000Z",
-      "source": "official",
-      "bestFor": [
-        "sticker packs",
-        "daily progress",
-        "low dice accounts"
-      ],
-      "actions": [
-        "Use this as a daily blocker, not a dice-spend trigger.",
-        "Finish the three tasks before judging event ROI, because packs and small rewards change the plan.",
-        "The site resets this checklist on the 13:00 UTC game-day anchor; if the in-game timer differs, follow the game."
-      ]
-    },
-    {
-      "id": "puppet-party",
-      "name": "Puppet Party",
-      "type": "main",
-      "status": "active",
-      "startsAt": "2026-05-21T01:00:00+08:00",
-      "endsAt": "2026-05-22T01:00:00+08:00",
-      "source": "public",
-      "bestFor": [
-        "Peg-E tokens",
-        "racing flags",
-        "corner scoring"
-      ],
-      "actions": [
-        "Use corner-tile board position before raising multiplier.",
-        "Treat milestone 32 as the practical mid-stop if you need flags without going all in.",
-        "Send the chosen point target to ROI before spending dice."
-      ]
-    },
-    {
-      "id": "peg-e-prize-drop",
-      "name": "Peg-E Prize Drop",
-      "type": "special",
-      "status": "active",
-      "startsAt": "2026-05-21T01:00:00+08:00",
-      "endsAt": "2026-05-22T00:00:00+08:00",
-      "source": "public",
-      "bestFor": [
-        "sticker packs",
-        "free rolls",
-        "sticker value"
-      ],
-      "actions": [
-        "Collect tokens from Puppet Party and tournament rewards before dropping.",
-        "Spend tokens in one focused session so prize paths are easier to judge.",
-        "If dice bank is low, use Peg-E as a subsidy rather than chasing deep milestones."
-      ]
-    },
-    {
-      "id": "aladdin-racers",
-      "name": "Aladdin Racers",
-      "type": "race",
-      "status": "active",
-      "startsAt": "2026-05-21T01:00:00+08:00",
-      "endsAt": "2026-05-25T04:00:00+08:00",
-      "source": "public",
-      "bestFor": [
-        "team racing",
-        "racing flags",
-        "race dice"
-      ],
-      "actions": [
-        "Do not spend all flags before your team agrees on a target.",
-        "Add flags from Quick Wins, shop gifts, Puppet Party, and tournaments before judging the gap.",
-        "If teammates are inactive, protect dice and only push shared checkpoints."
-      ]
-    },
-    {
-      "id": "sticker-boom",
-      "name": "Sticker Boom Watch",
-      "type": "boost",
-      "status": "watch",
-      "startsAt": "2026-05-21T20:00:00+08:00",
-      "endsAt": "2026-05-22T23:00:00+08:00",
-      "source": "community",
-      "bestFor": [
-        "opening vaults",
-        "large sticker packs",
-        "album pushes"
-      ],
-      "actions": [
-        "Keep vaults and large packs parked until an in-game boost appears.",
-        "If no boost appears, finish trades first and keep packs unopened.",
-        "Use this as a watch trigger, not a confirmed official window."
-      ]
-    },
-    {
-      "id": "golden-blitz-watch",
-      "name": "Golden Blitz Watch",
-      "type": "trade",
-      "status": "watch",
-      "startsAt": "2026-05-21T20:00:00+08:00",
-      "endsAt": "2026-05-22T20:00:00+08:00",
-      "source": "community",
-      "bestFor": [
-        "gold sticker trades",
-        "album completion",
-        "friend trading"
-      ],
-      "actions": [
-        "Prepare screenshots of duplicate gold stickers and missing targets.",
-        "Do not burn wild cards on rumored Blitz stickers until the in-game pair is confirmed.",
-        "Save trade partner notes locally before the window opens."
-      ]
-    },
-    {
-      "id": "high-roller",
-      "name": "High Roller Watch",
-      "type": "boost",
-      "status": "watch",
-      "startsAt": "2026-05-21T21:00:00+08:00",
-      "endsAt": "2026-05-21T21:10:00+08:00",
-      "source": "community",
-      "bestFor": [
-        "large dice banks",
-        "top event milestones",
-        "tournament push"
-      ],
-      "actions": [
-        "Use only if your dice bank can absorb variance.",
-        "Pair with corner-tile position during Puppet Party or with a race-flag target.",
-        "Stop when the next milestone cost exceeds the dice return target."
-      ]
-    }
-  ],
+  "events": [],
   "milestones": [
     {
       "eventId": "puppet-party",
@@ -590,6 +436,13 @@
     }
   ],
   "changelog": [
+    {
+      "date": "2026-05-25",
+      "items": [
+        "May 25 review: stale reward links and expired event windows were pruned, refresh status now gates player-facing timing decisions, and Quick Wins reset follows the 8:00 AM America/New_York game-day anchor with DST-aware handling.",
+        "Active content after pruning: 1 reward routes, 0 event windows. Removed 2 expired reward routes and 7 old event windows."
+      ]
+    },
     {
       "date": "2026-05-21",
       "items": [

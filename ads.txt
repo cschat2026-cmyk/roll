@@ -1,4 +1,4 @@
 google.com, pub-2456404542897668, DIRECT, f08c47fec0942fa0
 # Fallback file for hosts that do not support redirect rules.
 # On supported production hosts, /ads.txt should 301 redirect to:
-# https://srv.adstxtmanager.com/19390/rollradargo.com
+# https://srv.adstxtmanager.com/19390/rich20.top

@@ -2,7 +2,9 @@ const SCRIPT_URL = new URL(document.currentScript?.src || "assets/js/app.js", wi
 const DATA_URL = new URL("../../data/site-data.json", SCRIPT_URL);
 const I18N_URL = new URL("../../data/i18n.json", SCRIPT_URL);
 const STORAGE_KEY = "rollradar-go-state-v1";
-const GAME_DAY_RESET_HOUR_UTC = 13;
+const LIVE_CACHE_KEY = "rollradar-go-live-cache-v1";
+const QUICK_WINS_RESET_TIME_ZONE = "America/New_York";
+const QUICK_WINS_RESET_HOUR_LOCAL = 8;
 const AD_STATE = {
   renderedKeys: new Set(),
   activeProvider: "ezoic"
@@ -14,6 +16,8 @@ let i18n = null;
 let currentLang = state.lang || detectLang();
 let refreshTimer = null;
 let dailyResetTimer = null;
+let refreshInFlight = null;
+let lastRefreshMode = "seed";
 
 const DATA_TEXT = {
   "zh-CN": {
@@ -76,7 +80,7 @@ const DATA_TEXT = {
       "quick-wins": [
         "这是每日阻塞项，不是花骰子的触发窗口。",
         "先完成三项任务，再判断活动 ROI，因为贴纸包和小奖励会改变今日计划。",
-        "本站按 13:00 UTC 游戏日重置；如果游戏内倒计时不同，以游戏内为准。"
+        "本站按 America/New_York 时区上午 8:00 的游戏日重置；如果游戏内倒计时不同，以游戏内为准。"
       ],
       "puppet-party": [
         "先用 ROI 选一个可承受的里程碑，不要直接追完整奖励表。",
@@ -230,7 +234,7 @@ const DATA_TEXT = {
       "quick-wins": [
         "這是每日阻塞項，不是花骰子的觸發窗口。",
         "先完成三項任務，再判斷活動 ROI，因為貼紙包和小獎勵會改變今日計畫。",
-        "本站按 13:00 UTC 遊戲日重置；如果遊戲內倒數不同，以遊戲內為準。"
+        "本站按 America/New_York 時區上午 8:00 的遊戲日重置；如果遊戲內倒數不同，以遊戲內為準。"
       ],
       "puppet-party": [
         "先用 ROI 選一個可承受的里程碑，不要直接追完整獎勵表。",
@@ -335,19 +339,22 @@ async function init() {
     showFatalState("Seed data is missing. Rebuild assets/js/seed-data.js.");
     return;
   }
+  loadLiveCache();
   applyLanguage(currentLang);
   ensureDailyReset();
   bindLanguage();
   bindAdProviderRefresh();
   hydrateSavedInputs();
+  bindHomePlanner();
+  syncRuntimeFreshnessState();
   renderShared();
   renderByPage();
-  bindHomePlanner();
-  stampFreshness();
+  stampFreshness(lastRefreshMode);
   scheduleRefreshCheck();
   scheduleDailyResetCheck();
+  bindVisibilityRefresh();
   injectAnalyticsHook();
-  refreshContentNow();
+  await refreshContentNow({ reason: "startup", force: shouldForceRefreshOnOpen() });
 }
 
 async function fetchJson(url) {
@@ -358,18 +365,46 @@ async function fetchJson(url) {
   return response.json();
 }
 
-async function refreshContentNow() {
-  try {
-    const [data, translations] = await Promise.all([fetchJson(DATA_URL), fetchJson(I18N_URL)]);
-    siteData = data;
-    i18n = translations;
+async function refreshContentNow({ reason = "manual", force = false } = {}) {
+  if (!force && refreshInFlight) return refreshInFlight;
+  refreshInFlight = (async () => {
+    const previousData = cloneData(siteData);
+    const previousI18n = cloneData(i18n);
+    const startedAt = new Date().toISOString();
+    setRefreshFeedback("checking", reason, startedAt);
+    syncRuntimeFreshnessState("checking");
+    renderShared();
+    renderByPage();
+    stampFreshness("checking");
+    try {
+      const [data, translations] = await Promise.all([fetchJson(DATA_URL), fetchJson(I18N_URL)]);
+      siteData = data;
+      i18n = translations;
+      saveLiveCache();
+      lastRefreshMode = "live";
+      setRefreshFeedback("live", reason, startedAt);
+    } catch (error) {
+      console.info("Using bundled or cached data because live JSON refresh is unavailable.", error);
+      if (loadLiveCache()) {
+        lastRefreshMode = "cache";
+        setRefreshFeedback("cache", reason, startedAt, error);
+      } else {
+        siteData = previousData;
+        i18n = previousI18n;
+        lastRefreshMode = "seed";
+        setRefreshFeedback("seed", reason, startedAt, error);
+      }
+    }
+    syncRuntimeFreshnessState(lastRefreshMode);
     applyLanguage(currentLang);
     renderShared();
     renderByPage();
-    stampFreshness("live");
-  } catch (error) {
-    stampFreshness("seed");
-    console.info("Using bundled seed data because live JSON refresh is unavailable.", error);
+    stampFreshness(lastRefreshMode);
+  })();
+  try {
+    await refreshInFlight;
+  } finally {
+    refreshInFlight = null;
   }
 }
 
@@ -585,7 +620,7 @@ function renderShared() {
   if (heroResetSummary) {
     heroResetSummary.textContent = template(t("heroOverlayCopy"), {
       time: formatTime(reset.next),
-      zone: timeZoneLabel()
+      zone: quickWinsResetLabel()
     });
   }
   renderHeroCommandStrip(plan);
@@ -733,7 +768,7 @@ function renderDailyResetPanel() {
   target.innerHTML = `
     <div>
       <strong>${template(t("dailyResetTitle"), { done, total: getChecklistItems().length })}</strong>
-      <span>${template(t("dailyResetCopy"), { time: formatTime(reset.next), left: timeUntil(reset.next.toISOString()), zone: timeZoneLabel() })}</span>
+      <span>${template(t("dailyResetCopy"), { time: formatTime(reset.next), left: timeUntil(reset.next.toISOString()), zone: quickWinsResetLabel() })}</span>
       <small>${t("dailyResetSource")}</small>
     </div>
     <button class="btn mini-btn" type="button" data-reset-daily>${t("resetToday")}</button>
@@ -981,6 +1016,7 @@ function gatherPlanContext() {
   const stopLine = roiPlan.stopLine ?? Math.max(currentPoints, targetPoints - Math.max(100, Math.floor(gap * 0.25)));
   const quickWinsDone = Boolean(state.checks?.[1]);
   const triggerRequired = confirmedSpendEvents().length > 0;
+  const dataUsable = isCurrentDataUsable();
   return {
     planState,
     stickerState,
@@ -1016,7 +1052,8 @@ function gatherPlanContext() {
     canPush,
     stopLine,
     quickWinsDone,
-    triggerRequired
+    triggerRequired,
+    dataUsable
   };
 }
 
@@ -1033,7 +1070,14 @@ function deriveTodayPlan(context) {
   let nextAction = t("claimDice");
   let block = t("planBlockDice");
 
-  if (context.unclaimedLinks.length > 0) {
+  if (!context.dataUsable) {
+    phase = "refresh";
+    title = t("planTitleRefresh");
+    summary = t("planSummaryRefresh");
+    nextTool = homeLink("#dashboard");
+    nextAction = t("refreshNow");
+    block = t("planBlockRefresh");
+  } else if (context.unclaimedLinks.length > 0) {
     phase = "claim";
     title = t("planTitleClaim");
     summary = t("planSummaryClaim");
@@ -1742,6 +1786,27 @@ function renderEventList() {
   if (!target) return;
   const filter = state.eventFilter || "all";
   const events = filteredEvents(filter);
+  if (!events.length) {
+    const freshness = dataFreshnessSummary();
+    target.innerHTML = `
+      <article class="event-item">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">${escapeHtml(t("freshnessStatus"))}</p>
+            <h2>${escapeHtml(t("noLiveEventsTitle"))}</h2>
+          </div>
+          ${sourcePill("public")}
+        </div>
+        <p>${escapeHtml(freshness.copy)}</p>
+        <div class="dice-actions">
+          <button class="btn primary" type="button" data-refresh-now>${t("refreshNow")}</button>
+          <a class="btn mini-btn" href="${pageLink("free-dice")}">${t("claimDice")}</a>
+        </div>
+      </article>
+    `;
+    bindActionControls(target);
+    return;
+  }
   target.innerHTML = events
     .map((event) => `
       <article class="event-item">
@@ -2504,6 +2569,7 @@ function renderResourceGap() {
   const plan = updateTodayPlan() || {};
   const checks = state.checks || {};
   const freshness = dataFreshnessSummary();
+  const usableToday = isCurrentDataUsable();
   const watch = communityWatchSummary();
   const watchRow = watch.unconfirmedCount
     ? {
@@ -2549,9 +2615,11 @@ function renderResourceGap() {
     },
     {
       title: t("todayUsable"),
-      copy: template(t("todayUsableCopy"), { dice: activeDiceLinks().length, events: confirmedSpendEvents().length }),
-      status: t("ready"),
-      control: { type: "link", href: pageLink("events"), label: t("viewEvents") }
+      copy: usableToday
+        ? template(t("todayUsableCopy"), { dice: activeDiceLinks().length, events: confirmedSpendEvents().length })
+        : template(t("todayUsableStaleCopy"), { dice: activeDiceLinks().length, events: confirmedSpendEvents().length }),
+      status: usableToday ? t("ready") : t("freshnessStale"),
+      control: { type: "button", action: "refresh", label: t("refreshNow") }
     },
     watchRow
   ];
@@ -2987,7 +3055,12 @@ async function copyText(text) {
 
 function activeDiceLinks() {
   const now = Date.now();
-  const seeded = siteData.diceLinks.filter((link) => new Date(link.expiresAt).getTime() > now || link.source === "official");
+  const freshness = dataFreshnessSummary();
+  const seeded = siteData.diceLinks.filter((link) => {
+    if (link.source === "official") return true;
+    if (freshness.level === "stale") return false;
+    return new Date(link.expiresAt).getTime() > now;
+  });
   const custom = (state.customDiceLinks || []).filter((link) => new Date(link.expiresAt).getTime() > now);
   return [...custom, ...seeded];
 }
@@ -3034,22 +3107,13 @@ function ensureDailyReset() {
 }
 
 function gameDayKey(date = new Date()) {
-  const shifted = new Date(date.getTime() - GAME_DAY_RESET_HOUR_UTC * 3600000);
-  return shifted.toISOString().slice(0, 10);
+  const reset = nextQuickWinsResetBoundary(date);
+  const previousReset = new Date(reset.getTime() - 24 * 3600000);
+  return `${previousReset.getUTCFullYear()}-${String(previousReset.getUTCMonth() + 1).padStart(2, "0")}-${String(previousReset.getUTCDate()).padStart(2, "0")}`;
 }
 
 function nextGameDayReset(date = new Date()) {
-  const reset = new Date(Date.UTC(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate(),
-    GAME_DAY_RESET_HOUR_UTC,
-    0,
-    0,
-    0
-  ));
-  if (date.getTime() >= reset.getTime()) reset.setUTCDate(reset.getUTCDate() + 1);
-  return reset;
+  return nextQuickWinsResetBoundary(date);
 }
 
 function gameDayResetInfo() {
@@ -3061,6 +3125,70 @@ function gameDayResetInfo() {
 
 function timeZoneLabel() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone || t("localTime");
+}
+
+function quickWinsResetLabel() {
+  return `${QUICK_WINS_RESET_HOUR_LOCAL}:00 ${QUICK_WINS_RESET_TIME_ZONE}`;
+}
+
+function nextQuickWinsResetBoundary(date = new Date()) {
+  const currentInTarget = zonedParts(date, QUICK_WINS_RESET_TIME_ZONE);
+  const targetUtc = Date.UTC(
+    currentInTarget.year,
+    currentInTarget.month - 1,
+    currentInTarget.day,
+    QUICK_WINS_RESET_HOUR_LOCAL,
+    0,
+    0,
+    0
+  );
+  const offsetMinutes = timeZoneOffsetMinutes(QUICK_WINS_RESET_TIME_ZONE, new Date(targetUtc));
+  const todayReset = new Date(targetUtc - offsetMinutes * 60000);
+  if (date.getTime() < todayReset.getTime()) return todayReset;
+  const tomorrow = new Date(todayReset.getTime() + 24 * 3600000);
+  const tomorrowInTarget = zonedParts(tomorrow, QUICK_WINS_RESET_TIME_ZONE);
+  const tomorrowUtc = Date.UTC(
+    tomorrowInTarget.year,
+    tomorrowInTarget.month - 1,
+    tomorrowInTarget.day,
+    QUICK_WINS_RESET_HOUR_LOCAL,
+    0,
+    0,
+    0
+  );
+  const tomorrowOffsetMinutes = timeZoneOffsetMinutes(QUICK_WINS_RESET_TIME_ZONE, new Date(tomorrowUtc));
+  return new Date(tomorrowUtc - tomorrowOffsetMinutes * 60000);
+}
+
+function zonedParts(date, timeZone) {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  });
+  const parts = formatter.formatToParts(date).reduce((acc, part) => {
+    if (part.type !== "literal") acc[part.type] = part.value;
+    return acc;
+  }, {});
+  return {
+    year: Number(parts.year),
+    month: Number(parts.month),
+    day: Number(parts.day),
+    hour: Number(parts.hour),
+    minute: Number(parts.minute),
+    second: Number(parts.second)
+  };
+}
+
+function timeZoneOffsetMinutes(timeZone, date) {
+  const parts = zonedParts(date, timeZone);
+  const asUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+  return Math.round((asUtc - date.getTime()) / 60000);
 }
 
 function syncDiceChecklistState(links) {
@@ -3076,7 +3204,10 @@ function syncDiceChecklistState(links) {
 
 function activeEvents() {
   const now = Date.now();
-  return siteData.events.filter((event) => new Date(event.endsAt).getTime() > now - 3600000);
+  return siteData.events.filter((event) => {
+    if (dataFreshnessSummary().level === "stale" && event.source !== "official") return false;
+    return new Date(event.endsAt).getTime() > now - 3600000;
+  });
 }
 
 function isDailyUtilityEvent(event) {
@@ -3138,17 +3269,20 @@ function dataFreshnessSummary() {
   const staleAfter = updated + (Number(siteData.meta.updateCadenceHours) || 6) * 2 * 3600000;
   if (now > staleAfter) {
     return {
+      level: "stale",
       status: t("freshnessStale"),
       copy: `${template(t("resourceGapRefreshCopy"), { updated: formatDate(siteData.meta.updatedAt), next: formatDate(siteData.meta.nextRefreshAt) })} ${t("freshnessStaleCopy")}`
     };
   }
   if (now >= next) {
     return {
+      level: "due",
       status: t("freshnessDue"),
       copy: `${template(t("resourceGapRefreshCopy"), { updated: formatDate(siteData.meta.updatedAt), next: formatDate(siteData.meta.nextRefreshAt) })} ${t("freshnessDueCopy")}`
     };
   }
   return {
+    level: "fresh",
     status: t("freshnessFresh"),
     copy: `${template(t("resourceGapRefreshCopy"), { updated: formatDate(siteData.meta.updatedAt), next: formatDate(siteData.meta.nextRefreshAt) })} ${t("freshnessFreshCopy")}`
   };
@@ -3160,10 +3294,7 @@ function scheduleRefreshCheck() {
     const next = new Date(siteData.meta.nextRefreshAt).getTime();
     if (Date.now() < next) return;
     try {
-      siteData = await fetchJson(DATA_URL);
-      renderShared();
-      renderByPage();
-      stampFreshness();
+      await refreshContentNow({ reason: "timer", force: true });
     } catch (error) {
       console.warn("Refresh check failed", error);
     }
@@ -3258,8 +3389,78 @@ function formatTime(dateOrIso) {
 function stampFreshness(mode = "live") {
   const target = document.getElementById("freshnessText");
   if (!target) return;
-  const suffix = mode === "seed" ? ` (${t("seedMode")})` : "";
+  const suffixMap = {
+    seed: t("seedMode"),
+    cache: t("cacheMode"),
+    checking: t("checkingShort")
+  };
+  const suffix = suffixMap[mode] ? ` (${suffixMap[mode]})` : "";
   target.textContent = `${t("updated")}: ${formatDate(siteData.meta.updatedAt)} · ${dataFreshnessSummary().status}${suffix}`;
+}
+
+function shouldForceRefreshOnOpen() {
+  const freshness = dataFreshnessSummary();
+  const lastAttempt = new Date(state.lastRefreshAttemptAt || 0).getTime();
+  if (freshness.level === "stale") return true;
+  if (freshness.level === "due" && Date.now() - lastAttempt > 3 * 60 * 1000) return true;
+  return false;
+}
+
+function saveLiveCache() {
+  try {
+    localStorage.setItem(LIVE_CACHE_KEY, JSON.stringify({
+      siteData,
+      i18n,
+      savedAt: new Date().toISOString()
+    }));
+  } catch {}
+}
+
+function loadLiveCache() {
+  try {
+    const payload = JSON.parse(localStorage.getItem(LIVE_CACHE_KEY) || "null");
+    if (!payload?.siteData?.meta || !payload?.i18n?.en) return false;
+    const cachedUpdated = new Date(payload.siteData.meta.updatedAt).getTime();
+    const currentUpdated = new Date(siteData.meta.updatedAt).getTime();
+    if (!Number.isFinite(cachedUpdated) || cachedUpdated <= currentUpdated) return false;
+    siteData = payload.siteData;
+    i18n = payload.i18n;
+    lastRefreshMode = "cache";
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function setRefreshFeedback(mode, reason = "manual", startedAt = new Date().toISOString(), error = null) {
+  state.lastRefreshAttemptAt = startedAt;
+  state.lastRefreshReason = reason;
+  state.lastRefreshMode = mode;
+  state.lastRefreshError = error ? String(error.message || error) : "";
+  if (mode === "live" || mode === "cache") state.lastRefreshSuccessAt = new Date().toISOString();
+  saveState();
+}
+
+function syncRuntimeFreshnessState(mode = state.lastRefreshMode || lastRefreshMode) {
+  lastRefreshMode = mode;
+  document.documentElement.dataset.freshness = dataFreshnessSummary().level;
+  document.documentElement.dataset.refreshMode = mode;
+}
+
+function bindVisibilityRefresh() {
+  document.addEventListener("visibilitychange", async () => {
+    if (document.visibilityState !== "visible") return;
+    if (!shouldForceRefreshOnOpen()) return;
+    try {
+      await refreshContentNow({ reason: "visible", force: true });
+    } catch (error) {
+      console.warn("Visibility refresh failed", error);
+    }
+  });
+}
+
+function isCurrentDataUsable() {
+  return dataFreshnessSummary().level !== "stale";
 }
 
 function setValue(id, value) {

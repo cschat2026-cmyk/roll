@@ -37,7 +37,7 @@ async function listFiles(dir) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       result.push(...await listFiles(full));
-    } else if (/\.(html|xml|txt|json|js)$/.test(entry.name)) {
+    } else if (entry.name === "_redirects" || /\.(html|xml|txt|json|js)$/.test(entry.name)) {
       result.push(full);
     }
   }
