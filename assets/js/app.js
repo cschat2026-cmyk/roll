@@ -416,6 +416,10 @@ function adBootstrapState() {
   return window.RollRadarAdsBoot || {};
 }
 
+function adsensePlacementsReady() {
+  return adConfig().adsensePlacementsReady === true;
+}
+
 function currentAdProvider() {
   const runtime = adBootstrapState();
   const configured = String(adConfig().adProvider || "").toLowerCase();
@@ -447,6 +451,7 @@ function renderAdSlot(slotRoot) {
   const placement = adConfig().adPlacements?.[slotKey];
   if (!slotKey || !mount || !placement) return;
   const provider = currentAdProvider();
+  const adLabel = slotRoot.querySelector("[data-i18n='adLabel']");
   if (
     slotRoot.dataset.renderedProvider === provider &&
     slotRoot.dataset.renderedKey === slotKey &&
@@ -458,14 +463,24 @@ function renderAdSlot(slotRoot) {
   mount.innerHTML = "";
 
   if (provider === "ezoic" && Number.isFinite(Number(placement.ezoicSlot))) {
+    slotRoot.hidden = false;
+    if (adLabel) adLabel.hidden = false;
     renderEzoicSlot(mount, Number(placement.ezoicSlot), slotKey);
     return;
   }
-  if (provider === "adsense" && placement.adsenseSlot && adConfig().adsenseClient) {
+  if (
+    provider === "adsense" &&
+    adsensePlacementsReady() &&
+    placement.adsenseSlot &&
+    adConfig().adsenseClient
+  ) {
+    slotRoot.hidden = false;
+    if (adLabel) adLabel.hidden = false;
     renderAdsenseSlot(mount, placement.adsenseSlot, slotKey);
     return;
   }
-  mount.innerHTML = `<div class="ad-slot-note">${escapeHtml(t("adFallbackNote") || "Ad space is preparing.")}</div>`;
+  mount.innerHTML = "";
+  slotRoot.hidden = true;
 }
 
 function renderEzoicSlot(mount, slotId, slotKey) {
@@ -612,7 +627,7 @@ function renderShared() {
   const nextRefreshStatus = document.getElementById("nextRefreshStatus");
   const heroResetSummary = document.getElementById("heroResetSummary");
   const plan = updateTodayPlan();
-  if (diceLinkCount) diceLinkCount.textContent = activeDiceLinks().length;
+  if (diceLinkCount) diceLinkCount.textContent = claimableDiceLinks().length;
   if (eventCount) eventCount.textContent = confirmedSpendEvents().length;
   if (savedPlanStatus) savedPlanStatus.textContent = plan ? t(`planPhase_${plan.phase}`) : t("ready");
   const reset = gameDayResetInfo();
@@ -628,10 +643,8 @@ function renderShared() {
   renderEventPreview();
   renderDailyChecklist();
   renderNextActions();
-  renderTodayRoutePanel();
   renderTargetChips();
   renderResourceGap();
-  renderSavedStatePanel();
   renderQuickstartGuide();
   renderPlanDriversPanel();
   updateBestMove();
@@ -645,7 +658,6 @@ function renderShared() {
 
 function renderByPage() {
   if (document.getElementById("diceList")) renderDiceList();
-  if (document.getElementById("customDiceForm")) bindCustomDiceForm();
   if (document.getElementById("eventList")) renderEventList();
   if (document.getElementById("eventFilters")) renderEventFilters();
   if (document.getElementById("eventPlanPanel")) renderEventPlanPanel();
@@ -665,7 +677,12 @@ function renderDicePreview() {
   const target = document.getElementById("dicePreview");
   if (!target) return;
   target.innerHTML = "";
-  activeDiceLinks().slice(0, 3).forEach((link) => {
+  const links = claimableDiceLinks();
+  if (!links.length) {
+    target.appendChild(miniItem(t("dicePreviewEmptyTitle"), t("dicePreviewEmptyCopy"), "official"));
+    return;
+  }
+  links.slice(0, 3).forEach((link) => {
     const detail = link.dice
       ? template(t("dicePreviewValue"), { dice: link.dice })
       : t("dicePreviewOfficial");
@@ -677,7 +694,12 @@ function renderEventPreview() {
   const target = document.getElementById("eventPreview");
   if (!target) return;
   target.innerHTML = "";
-  [...confirmedSpendEvents(), ...watchOnlyEvents()].slice(0, 3).forEach((event) => {
+  const events = [...confirmedSpendEvents(), ...watchOnlyEvents()];
+  if (!events.length) {
+    target.appendChild(miniItem(t("eventPreviewEmptyTitle"), t("eventPreviewEmptyCopy"), "public"));
+    return;
+  }
+  events.slice(0, 3).forEach((event) => {
     target.appendChild(miniItem(eventName(event), timeUntil(event.endsAt), event.source));
   });
 }
@@ -972,7 +994,7 @@ function gatherPlanContext() {
   const blitz = state.blitzPrep || {};
   const roiPlan = state.roiPlan || {};
   const trades = stickerState.trades || [];
-  const links = activeDiceLinks();
+  const links = claimableDiceLinks();
   normalizeClaimedLinks(links);
   const claimedLinks = links.filter(isDiceLinkClaimed);
   const claimedDice = claimedLinks.reduce((sum, link) => sum + (Number(link.dice) || 0), 0);
@@ -1145,6 +1167,13 @@ function deriveTodayPlan(context) {
     nextTool = pageLink("events");
     nextAction = t("viewEvents");
     block = t("planBlockSavedRoi");
+  } else if (!context.triggerRequired) {
+    phase = "hold";
+    title = t("planTitleRefresh");
+    summary = t("eventNoSpendWindowCopy");
+    nextTool = pageLink("events");
+    nextAction = t("viewEvents");
+    block = t("planBlockRefresh");
   } else if (context.canPush && canTrustDice) {
     phase = "push";
     title = t("planTitlePush");
@@ -1261,7 +1290,15 @@ function recommendActions() {
     });
   }
 
-  if (gap > dice) {
+  if (!context.triggerRequired) {
+    actions.push({
+      title: t("eventPreviewEmptyTitle"),
+      copy: t("eventPreviewEmptyCopy"),
+      reason: t("freshnessStaleCopy"),
+      priority: "high",
+      control: { type: "button", action: "refresh", label: t("refreshNow") }
+    });
+  } else if (gap > dice) {
     actions.push({
       title: t("actionNoChaseTitle"),
       copy: t("actionNoChaseCopy"),
@@ -1352,80 +1389,6 @@ function recommendActions() {
   return actions;
 }
 
-function renderTodayRoutePanel() {
-  const target = document.getElementById("todayRoutePanel");
-  if (!target) return;
-  const plan = updateTodayPlan() || {};
-  const context = gatherPlanContext();
-  const diceDone = Boolean(state.checks?.[0]);
-  const quickWinsDone = Boolean(state.checks?.[1]);
-  const stickerChecked = Boolean(state.checks?.[2]);
-  const trigger = activeEvents().find((event) => event.id === state.planTriggerEventId && isSpendTriggerEvent(event));
-  const route = [];
-
-  route.push({
-    title: diceDone ? t("routeDiceDoneTitle") : t("routeDiceTitle"),
-    copy: diceDone ? t("routeDiceDoneCopy") : t("routeDiceCopy"),
-    reason: t("routeDiceReason"),
-    priority: diceDone ? "normal" : "high",
-    control: { type: "link", href: pageLink("free-dice"), label: t("claimDice") }
-  });
-
-  route.push({
-    title: quickWinsDone ? t("routeQuickWinsDoneTitle") : t("routeQuickWinsTitle"),
-    copy: quickWinsDone ? t("routeQuickWinsDoneCopy") : t("routeQuickWinsCopy"),
-    reason: t("routeQuickWinsReason"),
-    priority: quickWinsDone ? "normal" : "high",
-    control: { type: "check", index: 1, label: t("markDone") }
-  });
-
-  if (trigger) {
-    route.push({
-      title: template(t("routeWindowTitle"), { event: eventName(trigger) }),
-      copy: template(t("routeWindowCopy"), { time: timeUntil(trigger.endsAt) }),
-      reason: eventPrimaryAction(trigger) || t("routeWindowReason"),
-      priority: "medium",
-      control: { type: "link", href: pageLink("roi-calculator"), label: t("runRoi") }
-    });
-  } else if (context.triggerRequired) {
-    route.push({
-      title: t("routeChooseTriggerTitle"),
-      copy: t("routeChooseTriggerCopy"),
-      reason: t("routeChooseTriggerReason"),
-      priority: quickWinsDone ? "high" : "medium",
-      control: { type: "link", href: pageLink("events"), label: t("chooseTrigger") }
-    });
-  } else {
-    route.push({
-      title: stickerChecked ? t("routeStickerDoneTitle") : t("routeStickerTitle"),
-      copy: stickerChecked ? t("routeStickerDoneCopy") : t("routeStickerCopy"),
-      reason: t("routeStickerReason"),
-      priority: stickerChecked ? "normal" : "medium",
-      control: { type: "link", href: pageLink("stickers"), label: t("openStickerPlanner") }
-    });
-  }
-
-  route.push({
-    title: t("routeDecisionTitle"),
-    copy: plan.summary || t("planCopyEmpty"),
-    reason: plan.block || t("planBlockDice"),
-    priority: plan.phase === "push" ? "medium" : "normal",
-    control: { type: "link", href: plan.nextTool || pageLink("free-dice"), label: plan.nextAction || t("claimDice") }
-  });
-
-  target.innerHTML = route.map((item) => `
-    <div class="action-item priority-${item.priority}">
-      <div>
-        <strong>${escapeHtml(item.title)}</strong>
-        <span>${escapeHtml(item.copy)}</span>
-        <small>${escapeHtml(item.reason)}</small>
-      </div>
-      ${actionControl(item)}
-    </div>
-  `).join("");
-  bindActionControls(target);
-}
-
 function renderQuickstartGuide() {
   const target = document.getElementById("quickstartGuide");
   const context = gatherPlanContext();
@@ -1437,6 +1400,7 @@ function renderQuickstartGuide() {
       ? { type: "button", action: "apply-dice-bank", label: t("applyToPlan") }
       : { type: "link", href: pageLink("free-dice"), label: diceReady ? t("openToolShort") : t("claimDice") };
     const eventReady = Boolean(plan.triggerEventId);
+    const eventNeedsRefresh = !context.triggerRequired;
     const stickerReady = Boolean(state.checks?.[2]) || context.openTrades.length > 0 || context.missingStickers <= 3 || context.goldBlocked;
     const steps = [
       {
@@ -1455,13 +1419,17 @@ function renderQuickstartGuide() {
       {
         step: "02",
         title: t("eventClock"),
-        copy: eventReady
+        copy: eventNeedsRefresh
+          ? t("eventPreviewEmptyCopy")
+          : eventReady
           ? template(t("planSnapshotTriggerCopy"), { trigger: plan.triggerLabel || t("ready") })
           : context.triggerRequired ? t("eventNoTriggerCopy") : t("eventNoSpendWindowCopy"),
         status: eventReady ? t("ready") : t("needsAction"),
-        ready: eventReady,
+        ready: eventReady || eventNeedsRefresh,
         urgent: !eventReady && diceReady,
-        control: eventReady
+        control: eventNeedsRefresh
+          ? { type: "button", action: "refresh", label: t("refreshNow") }
+          : eventReady
           ? { type: "link", href: pageLink("events"), label: t("viewEvents") }
           : { type: "link", href: pageLink("events"), label: t("chooseTrigger") }
       },
@@ -1574,9 +1542,26 @@ function renderDiceList() {
   const target = document.getElementById("diceList");
   if (!target) return;
   target.innerHTML = "";
-  const links = activeDiceLinks();
+  const links = claimableDiceLinks();
   normalizeClaimedLinks(links);
   syncDiceChecklistState(links);
+  if (!links.length) {
+    const official = officialRewardLink();
+    target.innerHTML = `
+      <article class="dice-item">
+        <div>
+          <strong>${escapeHtml(t("dicePreviewEmptyTitle"))}</strong>
+          <span>${escapeHtml(t("dicePreviewEmptyCopy"))}</span>
+          <div class="event-meta">${sourcePill("official")}<span class="tag">${t("dicePreviewOfficial")}</span></div>
+        </div>
+        <div class="dice-actions">
+          ${official ? `<a class="btn primary" href="${escapeHtmlAttr(official.claimUrl)}" target="_blank" rel="noopener">${t("claimDice")}</a>` : ""}
+          <button class="btn" type="button" data-refresh-now>${t("refreshNow")}</button>
+        </div>
+      </article>
+    `;
+    bindActionControls(target);
+  }
   links.forEach((link) => {
     const item = document.createElement("article");
     const claimed = isDiceLinkClaimed(link);
@@ -1591,7 +1576,6 @@ function renderDiceList() {
         <a class="btn primary" href="${link.claimUrl}" target="_blank" rel="noopener">${t("claimDice")}</a>
         <button class="btn" type="button" data-copy="${link.claimUrl}">${t("copy")}</button>
         <button class="btn" type="button" data-claim="${link.id}">${claimed ? t("undoClaimed") : t("markClaimed")}</button>
-        ${link.id.startsWith("custom-") ? `<button class="btn" type="button" data-delete-dice="${link.id}">${t("deleteLink")}</button>` : ""}
       </div>
     `;
     target.appendChild(item);
@@ -1618,14 +1602,6 @@ function renderDiceList() {
       renderDiceList();
     });
   });
-  target.querySelectorAll("[data-delete-dice]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.customDiceLinks = (state.customDiceLinks || []).filter((link) => link.id !== button.dataset.deleteDice);
-      if (state.claimedLinks) delete state.claimedLinks[button.dataset.deleteDice];
-      saveState();
-      renderDiceList();
-    });
-  });
   renderDiceProgress(links);
   const reset = document.getElementById("resetClaimed");
   if (reset) {
@@ -1639,7 +1615,9 @@ function renderDiceList() {
   }
   const markAll = document.getElementById("markAllDice");
   if (markAll) {
+    markAll.disabled = links.length === 0;
     markAll.onclick = () => {
+      if (!links.length) return;
       state.claimedLinks ||= {};
       links.forEach((link) => {
         state.claimedLinks[link.id] = diceLinkClaimKey(link);
@@ -1653,43 +1631,19 @@ function renderDiceList() {
   renderDiceNextSteps(links);
 }
 
-function bindCustomDiceForm() {
-  const form = document.getElementById("customDiceForm");
-  if (!form || form.dataset.bound === "true") return;
-  form.dataset.bound = "true";
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const url = document.getElementById("customDiceUrl")?.value.trim();
-    const label = document.getElementById("customDiceLabel")?.value.trim();
-    const dice = numberValue("customDiceValue", 25);
-    const feedback = document.getElementById("customDiceFeedback");
-    if (!url || !/^https?:\/\//i.test(url)) {
-      if (feedback) feedback.textContent = t("customDiceUrlRequired");
-      return;
-    }
-    state.customDiceLinks ||= [];
-    state.customDiceLinks.unshift({
-      id: `custom-${Date.now()}`,
-      label: label || t("customDiceDefaultLabel"),
-      dice,
-      status: "player",
-      claimUrl: url,
-      expiresAt: nextGameDayReset().toISOString(),
-      source: "community",
-      note: t("customDiceNote")
-    });
-    setValue("customDiceUrl", "");
-    setValue("customDiceLabel", "");
-    setValue("customDiceValue", 25);
-    saveState();
-    if (feedback) feedback.textContent = t("customDiceSaved");
-    renderDiceList();
-  });
-}
-
 function renderDiceProgress(links) {
   const target = document.getElementById("diceProgress");
   if (!target) return;
+  if (!links.length) {
+    target.innerHTML = `
+      <div>
+        <strong>${escapeHtml(t("dicePreviewEmptyTitle"))}</strong>
+        <span>${escapeHtml(t("dicePreviewEmptyCopy"))}</span>
+      </div>
+      <div class="linked-meta"><small>${t("freshnessDue")}</small></div>
+    `;
+    return;
+  }
   const claimed = links.filter(isDiceLinkClaimed).length;
   const totalDice = links.reduce((sum, link) => sum + (Number(link.dice) || 0), 0);
   const claimedDice = links.filter(isDiceLinkClaimed).reduce((sum, link) => sum + (Number(link.dice) || 0), 0);
@@ -1705,6 +1659,32 @@ function renderDiceProgress(links) {
 function renderDiceNextSteps(links) {
   const target = document.getElementById("diceNextSteps");
   if (!target) return;
+  if (!links.length) {
+    const actions = [
+      {
+        title: t("eventPreviewEmptyTitle"),
+        copy: t("eventPreviewEmptyCopy"),
+        reason: t("freshnessDueCopy"),
+        priority: "high",
+        control: { type: "button", action: "refresh", label: t("refreshNow") }
+      },
+      {
+        title: t("actionQuickWinsTitle"),
+        copy: t("actionQuickWinsCopy"),
+        reason: t("actionQuickWinsReason"),
+        priority: "medium",
+        control: { type: "link", href: pageLink("events"), label: t("viewEvents") }
+      }
+    ];
+    target.innerHTML = actions.map((item) => `
+      <div class="action-item priority-${item.priority}">
+        <div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.copy)}</span><small>${escapeHtml(item.reason)}</small></div>
+        ${actionControl(item)}
+      </div>
+    `).join("");
+    bindActionControls(target);
+    return;
+  }
   const claimed = links.filter(isDiceLinkClaimed).length;
   const claimedDice = links.filter(isDiceLinkClaimed).reduce((sum, link) => sum + (Number(link.dice) || 0), 0);
   const appliedMap = state.appliedClaimedLinkIds || {};
@@ -1874,12 +1854,19 @@ function renderEventPlanPanel() {
   if (!target) return;
   const trigger = activeEvents().find((event) => event.id === state.planTriggerEventId && isSpendTriggerEvent(event));
   const watch = communityWatchSummary();
+  const hasConfirmedSpendWindow = confirmedSpendEvents().length > 0;
   const actions = trigger ? [{
     title: template(t("eventTriggerPlanTitle"), { event: eventName(trigger) }),
     copy: template(t("eventTriggerPlanCopy"), { time: timeUntil(trigger.endsAt) }),
     reason: eventPrimaryAction(trigger),
     priority: "medium",
     control: { type: "link", href: pageLink("roi-calculator"), label: t("runRoi") }
+  }] : !hasConfirmedSpendWindow ? [{
+    title: t("eventPreviewEmptyTitle"),
+    copy: t("eventPreviewEmptyCopy"),
+    reason: t("freshnessDueCopy"),
+    priority: "high",
+    control: { type: "button", action: "refresh", label: t("refreshNow") }
   }] : [{
     title: t("eventNoTriggerTitle"),
     copy: t("eventNoTriggerCopy"),
@@ -1915,7 +1902,7 @@ function renderEventPlanPanel() {
 
 function bindBlitzPrep() {
   const ids = ["goldDupesReady", "missingTradeTargets", "tradePartnersReady", "tradeScreenshotsReady"];
-  const update = () => renderBlitzPrep();
+  const update = () => renderBlitzPrep({ persist: true });
   ids.forEach((id) => {
     const el = document.getElementById(id);
     if (!el || el.dataset.bound === "true") return;
@@ -1925,7 +1912,7 @@ function bindBlitzPrep() {
     el.addEventListener("change", update);
   });
   hydrateBlitzPrepInputs();
-  renderBlitzPrep();
+  renderBlitzPrep({ persist: Boolean(state.blitzPrep) });
 }
 
 function hydrateBlitzPrepInputs() {
@@ -1937,7 +1924,7 @@ function hydrateBlitzPrepInputs() {
   if (screenshots) screenshots.checked = Boolean(saved.screenshotsReady);
 }
 
-function renderBlitzPrep() {
+function renderBlitzPrep({ persist = false } = {}) {
   const result = document.getElementById("blitzPrepResult");
   const steps = document.getElementById("blitzPrepSteps");
   if (!result || !steps) return;
@@ -1950,8 +1937,10 @@ function renderBlitzPrep() {
   const copy = left === 0 ? t("blitzReadyCopy") : template(t("blitzNotReadyCopy"), { goldDupes, missingTargets, tradePartners });
   result.className = `mini-item calculator-result${left === 0 ? "" : " warn"}`;
   result.innerHTML = `<strong>${escapeHtml(verdict)}</strong><span>${escapeHtml(copy)}</span>`;
-  state.blitzPrep = { goldDupes, missingTargets, tradePartners, screenshotsReady, left };
-  saveState();
+  if (persist) {
+    state.blitzPrep = { goldDupes, missingTargets, tradePartners, screenshotsReady, left };
+    saveState();
+  }
   const actions = [];
   if (goldDupes <= 0) actions.push({ title: t("blitzNeedDupesTitle"), copy: t("blitzNeedDupesCopy"), reason: t("blitzNeedDupesReason"), priority: "high", control: { type: "link", href: pageLink("stickers"), label: t("openStickerPlanner") } });
   if (missingTargets <= 0) actions.push({ title: t("blitzNeedTargetsTitle"), copy: t("blitzNeedTargetsCopy"), reason: t("blitzNeedTargetsReason"), priority: "high", control: { type: "link", href: pageLink("stickers"), label: t("openStickerPlanner") } });
@@ -2289,7 +2278,7 @@ function hydrateVaultInputs() {
 
 function bindVaultDecision() {
   const ids = ["vaultStars", "packBacklog", "stickerBoomReady"];
-  const update = () => renderVaultDecision();
+  const update = () => renderVaultDecision({ persist: true });
   ids.forEach((id) => {
     const el = document.getElementById(id);
     if (!el || el.dataset.bound === "true") return;
@@ -2297,10 +2286,10 @@ function bindVaultDecision() {
     el.addEventListener("input", update);
     el.addEventListener("change", update);
   });
-  renderVaultDecision();
+  renderVaultDecision({ persist: Boolean(state.vault) });
 }
 
-function renderVaultDecision() {
+function renderVaultDecision({ persist = false } = {}) {
   const result = document.getElementById("vaultDecisionResult");
   const steps = document.getElementById("vaultDecisionSteps");
   if (!result || !steps) return;
@@ -2329,8 +2318,10 @@ function renderVaultDecision() {
   }
   result.className = className;
   result.innerHTML = `<strong>${escapeHtml(verdict)}</strong><span>${escapeHtml(copy)}</span>`;
-  state.vault = { stars, packBacklog, stickerBoomReady, lastVerdict };
-  saveState();
+  if (persist) {
+    state.vault = { stars, packBacklog, stickerBoomReady, lastVerdict };
+    saveState();
+  }
   const actions = [];
   if (lastVerdict === "wait") {
     actions.push({ title: t("vaultStepWaitTitle"), copy: t("vaultStepWaitCopy"), reason: t("vaultStepWaitReason"), priority: "high", control: { type: "link", href: pageLink("events"), label: t("viewEvents") } });
@@ -2571,6 +2562,7 @@ function renderResourceGap() {
   const freshness = dataFreshnessSummary();
   const usableToday = isCurrentDataUsable();
   const watch = communityWatchSummary();
+  const savedRoi = state.roiPlan || null;
   const watchRow = watch.unconfirmedCount
     ? {
         title: t("watchConfirm"),
@@ -2586,10 +2578,19 @@ function renderResourceGap() {
       };
   const rows = [
     {
-      title: t("resourceGapDice"),
-      copy: template(t("resourceGapDiceCopy"), { cost: context.cost, after: context.after }),
-      status: context.after < context.reserve ? t("riskHigh") : t("riskOk"),
-      control: { type: "link", href: pageLink("roi-calculator"), label: t("runRoi") }
+      title: t("planSnapshotStop"),
+      copy: savedRoi?.target
+        ? template(t("planSnapshotRoiCopy"), {
+            target: savedRoi.target,
+            dice: savedRoi.dice,
+            stop: savedRoi.stopLine,
+            reserve: savedRoi.reserve,
+            window: roiWindowLabel(savedRoi.windowId),
+            verdict: savedRoi.verdict || t("ready")
+          })
+        : template(t("planSnapshotStopCopy"), { stop: plan.stopLine ?? context.stopLine, reserve: context.reserve }),
+      status: savedRoi?.target ? t("saved") : (plan.phase === "push" ? t("riskOk") : t("needsAction")),
+      control: { type: "link", href: pageLink("roi-calculator"), label: savedRoi?.target ? t("updatePlan") : t("runRoi") }
     },
     {
       title: t("resourceGapStickers"),
@@ -2602,10 +2603,10 @@ function renderResourceGap() {
       control: { type: "link", href: pageLink("stickers"), label: t("openStickerPlanner") }
     },
     {
-      title: t("planSnapshotStop"),
-      copy: template(t("planSnapshotStopCopy"), { stop: plan.stopLine ?? context.stopLine, reserve: context.reserve }),
-      status: plan.phase === "push" ? t("riskOk") : t("needsAction"),
-      control: { type: "link", href: plan.nextTool || pageLink("events"), label: plan.nextAction || t("openToolShort") }
+      title: t("resourceGapDice"),
+      copy: template(t("resourceGapDiceCopy"), { cost: context.cost, after: context.after }),
+      status: context.after < context.reserve ? t("riskHigh") : t("riskOk"),
+      control: { type: "link", href: pageLink("roi-calculator"), label: t("runRoi") }
     },
     {
       title: t("freshnessStatus"),
@@ -2613,77 +2614,8 @@ function renderResourceGap() {
       status: freshness.status,
       control: { type: "button", action: "refresh", label: t("refreshNow") }
     },
-    {
-      title: t("todayUsable"),
-      copy: usableToday
-        ? template(t("todayUsableCopy"), { dice: activeDiceLinks().length, events: confirmedSpendEvents().length })
-        : template(t("todayUsableStaleCopy"), { dice: activeDiceLinks().length, events: confirmedSpendEvents().length }),
-      status: usableToday ? t("ready") : t("freshnessStale"),
-      control: { type: "button", action: "refresh", label: t("refreshNow") }
-    },
     watchRow
   ];
-  target.innerHTML = rows.map((row) => `
-    <div class="linked-item">
-      <div>
-        <strong>${escapeHtml(row.title)}</strong>
-        <span>${escapeHtml(row.copy)}</span>
-      </div>
-      <div class="linked-meta">
-        <small>${escapeHtml(row.status)}</small>
-        ${actionControl({ control: row.control })}
-      </div>
-    </div>
-  `).join("");
-  bindActionControls(target);
-}
-
-function renderSavedStatePanel() {
-  const target = document.getElementById("savedStatePanel");
-  if (!target) return;
-  const summary = updateTodayPlan() || {};
-  const roi = state.roiPlan || null;
-  const rows = [
-    {
-      title: t("planSnapshotPhase"),
-      copy: summary.summary || t("planCopyEmpty"),
-      status: t(`planPhase_${summary.phase || "farm"}`),
-      control: { type: "link", href: summary.nextTool || pageLink("free-dice"), label: summary.nextAction || t("claimDice") }
-    },
-    {
-      title: t("planSnapshotBlock"),
-      copy: summary.block || t("planBlockDice"),
-      status: t("needsAction"),
-      control: { type: "link", href: summary.nextTool || pageLink("events"), label: t("openToolShort") }
-    },
-    {
-      title: t("planSnapshotTrigger"),
-      copy: template(t("planSnapshotTriggerCopy"), { trigger: summary.triggerLabel || t("ready") }),
-      status: summary.triggerEventId ? t("needsAction") : t("ready"),
-      control: { type: "link", href: pageLink("events"), label: t("viewEvents") }
-    },
-    {
-      title: t("planSnapshotStop"),
-      copy: template(t("planSnapshotStopCopy"), { stop: summary.stopLine ?? 0, reserve: summary.reserve ?? 0 }),
-      status: summary.phase === "push" ? t("riskOk") : t("ready"),
-      control: { type: "link", href: pageLink("roi-calculator"), label: t("runRoi") }
-    }
-  ];
-  if (roi?.target) {
-    rows.splice(1, 0, {
-      title: t("planSnapshotRoi"),
-      copy: template(t("planSnapshotRoiCopy"), {
-        target: roi.target,
-        dice: roi.dice,
-        stop: roi.stopLine,
-        reserve: roi.reserve,
-        window: roiWindowLabel(roi.windowId),
-        verdict: roi.verdict || t("ready")
-      }),
-      status: t("saved"),
-      control: { type: "link", href: pageLink("roi-calculator"), label: t("runRoi") }
-    });
-  }
   target.innerHTML = rows.map((row) => `
     <div class="linked-item">
       <div>
@@ -3061,8 +2993,15 @@ function activeDiceLinks() {
     if (freshness.level === "stale") return false;
     return new Date(link.expiresAt).getTime() > now;
   });
-  const custom = (state.customDiceLinks || []).filter((link) => new Date(link.expiresAt).getTime() > now);
-  return [...custom, ...seeded];
+  return seeded;
+}
+
+function claimableDiceLinks() {
+  return activeDiceLinks().filter((link) => Number(link.dice) > 0);
+}
+
+function officialRewardLink() {
+  return siteData.diceLinks.find((link) => link.source === "official" && link.claimUrl) || null;
 }
 
 function diceLinkClaimKey(link) {
@@ -3482,7 +3421,11 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Some privacy-focused browsers and automated review environments disable storage.
+  }
 }
 
 function escapeHtml(value) {

@@ -1,4 +1,13 @@
+# Ads.txt mirror for rich20.top
+# GitHub Pages does not apply the `_redirects` file, so this file mirrors the
+# current Ezoic Ads.txt Manager output and keeps the direct AdSense publisher line.
+# Refresh this file whenever the Ezoic manager version changes.
 google.com, pub-2456404542897668, DIRECT, f08c47fec0942fa0
-# Fallback file for hosts that do not support redirect rules.
-# On supported production hosts, /ads.txt should 301 redirect to:
-# https://srv.adstxtmanager.com/19390/rich20.top
+ezoic.ai, 290879c531bd9af7ef09dabc9752b65d, DIRECT
+google.com, pub-6644558441501035, DIRECT, f08c47fec0942fa0
+google.com, pub-1175987143200523, RESELLER, f08c47fec0942fa0
+sharethrough.com, PmzCMtAd, DIRECT, d53b998a7bd4ecd2
+google.com, pub-9508156287817487, RESELLER, f08c47fec0942fa0
+improvedigital.com, 2483, RESELLER
+sonobi.com, c2988be809, RESELLER, d1a215d9eb5aee9e
+media.net, 8CUM5Z5B0, DIRECT

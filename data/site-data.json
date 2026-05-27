@@ -6,9 +6,9 @@
     "adsenseClient": "ca-pub-2456404542897668",
     "analyticsId": "G-REPLACE_ME",
     "updateCadenceHours": 6,
-    "updatedAt": "2026-05-25T07:40:00.000Z",
-    "nextRefreshAt": "2026-05-25T13:40:00.000Z",
-    "updateNote": "May 25 review: stale reward links and expired event windows were pruned, refresh status now gates player-facing timing decisions, and Quick Wins reset follows the 8:00 AM America/New_York game-day anchor with DST-aware handling.",
+    "updatedAt": "2026-05-27T02:20:00.000Z",
+    "nextRefreshAt": "2026-05-27T08:20:00.000Z",
+    "updateNote": "May 27 review: stale reward links remain hidden until a fresh public check succeeds, ad placeholders stay hidden until production placements are ready, and homepage guidance now prioritizes real next actions over duplicate summary cards.",
     "sourcePolicy": {
       "official": "Official information from Scopely or in-game screens.",
       "public": "Publicly visible web pages, creator posts, or published reward lists.",
@@ -68,7 +68,50 @@
       "reason": "Only attempt with a healthy dice bank or a strong event/boost overlap."
     }
   ],
-  "events": [],
+  "events": [
+    {
+      "id": "quick-wins",
+      "name": "Quick Wins",
+      "type": "daily",
+      "status": "active",
+      "startsAt": "2026-05-27T12:00:00.000Z",
+      "endsAt": "2026-05-28T12:00:00.000Z",
+      "source": "official",
+      "bestFor": ["daily progress", "free rolls", "sticker value"],
+      "actions": [
+        "Finish all three daily tasks before deciding whether to spend dice.",
+        "Use the in-game reset timer as the final authority if it differs from this site."
+      ]
+    },
+    {
+      "id": "sticker-boom",
+      "name": "Sticker Boom Watch",
+      "type": "boost",
+      "status": "watch",
+      "startsAt": "2026-05-27T16:00:00.000Z",
+      "endsAt": "2026-05-27T22:00:00.000Z",
+      "source": "community",
+      "bestFor": ["sticker packs", "opening vaults", "album completion"],
+      "actions": [
+        "Do not open a vault until the boost is visible in-game.",
+        "Use this as a preparation watch, not a confirmed trigger."
+      ]
+    },
+    {
+      "id": "golden-blitz-watch",
+      "name": "Golden Blitz Watch",
+      "type": "trade",
+      "status": "watch",
+      "startsAt": "2026-05-27T18:00:00.000Z",
+      "endsAt": "2026-05-28T02:00:00.000Z",
+      "source": "community",
+      "bestFor": ["gold sticker trades", "album completion", "friend trading"],
+      "actions": [
+        "Prepare screenshots and target trades, but wait for in-game confirmation before using wild cards.",
+        "Use the sticker planner to decide whether vault pressure can wait."
+      ]
+    }
+  ],
   "milestones": [
     {
       "eventId": "puppet-party",

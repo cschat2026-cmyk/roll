@@ -93,11 +93,11 @@
               </div>
               <div class="hero-metric">
                 <span data-i18n="rewardLinks">Reward links</span>
-                <strong id="diceLinkCount">3</strong>
+                <strong id="diceLinkCount">--</strong>
               </div>
               <div class="hero-metric">
                 <span data-i18n="eventWindows">Event windows</span>
-                <strong id="eventCount">4</strong>
+                <strong id="eventCount">--</strong>
               </div>
               <div class="hero-metric">
                 <span data-i18n="savedPlan">Saved plan</span>
@@ -172,22 +172,10 @@
 
         <article class="tool-card compact today-route-card">
           <div class="card-head">
-            <p class="eyebrow" data-i18n="todayRoute">Today route</p>
-            <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
-          </div>
-          <div id="todayRoutePanel" class="action-feed"></div>
-        </article>
-
-        <article class="tool-card compact">
-          <div class="card-head">
             <p class="eyebrow" data-i18n="claimDice">Claim Dice</p>
             <a href="pages/free-dice.html" data-i18n="openTool">Open tool</a>
           </div>
-          <div id="dicePreview" class="stack-list">
-            <div class="mini-item"><strong>Daily reward route</strong><span>Open on phone, verify in game, then mark handled.</span><div class="event-meta"><span class="source-pill source-public">Public source</span></div></div>
-            <div class="mini-item"><strong>Community dice check</strong><span>Use before spending dice on events.</span><div class="event-meta"><span class="source-pill source-community">Player experience</span></div></div>
-            <div class="mini-item"><strong>Official reward page</strong><span>Use when public links conflict.</span><div class="event-meta"><span class="source-pill source-official">Official information</span></div></div>
-          </div>
+          <div id="dicePreview" class="stack-list"></div>
         </article>
 
         <article class="tool-card compact">
@@ -195,11 +183,7 @@
             <p class="eyebrow" data-i18n="eventClock">Event Clock</p>
             <a href="pages/events.html" data-i18n="openTool">Open tool</a>
           </div>
-          <div id="eventPreview" class="stack-list">
-            <div class="mini-item"><strong>Quick Wins</strong><span>Finish daily tasks before big pushes.</span><div class="event-meta"><span class="source-pill source-official">Official information</span></div></div>
-            <div class="mini-item"><strong>Puppet Party</strong><span>Choose a milestone target before spending.</span><div class="event-meta"><span class="source-pill source-public">Public source</span></div></div>
-            <div class="mini-item"><strong>Peg-E Prize Drop</strong><span>Use tokens after checking the reward path.</span><div class="event-meta"><span class="source-pill source-public">Public source</span></div></div>
-          </div>
+          <div id="eventPreview" class="stack-list"></div>
         </article>
 
         <article class="tool-card compact">
@@ -232,14 +216,7 @@
         </article>
         <article class="tool-card">
           <div class="card-head">
-            <p class="eyebrow" data-i18n="planSnapshot">Today plan snapshot</p>
-            <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
-          </div>
-          <div id="savedStatePanel" class="result-list"></div>
-        </article>
-        <article class="tool-card">
-          <div class="card-head">
-            <p class="eyebrow" data-i18n="resourceGap">Resource gap</p>
+            <p class="eyebrow" data-i18n="spendGuardrails">Spend guardrails</p>
             <span class="source-pill source-inference" data-source-label="inference">Reasoned suggestion</span>
           </div>
           <div id="resourceGapPanel" class="result-list"></div>

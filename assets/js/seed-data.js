@@ -7,9 +7,9 @@ window.RollRadarSeed = {
       "adsenseClient": "ca-pub-2456404542897668",
       "analyticsId": "G-REPLACE_ME",
       "updateCadenceHours": 6,
-      "updatedAt": "2026-05-25T07:40:00.000Z",
-      "nextRefreshAt": "2026-05-25T13:40:00.000Z",
-      "updateNote": "May 25 review: stale reward links and expired event windows were pruned, refresh status now gates player-facing timing decisions, and Quick Wins reset follows the 8:00 AM America/New_York game-day anchor with DST-aware handling.",
+      "updatedAt": "2026-05-27T02:20:00.000Z",
+      "nextRefreshAt": "2026-05-27T08:20:00.000Z",
+      "updateNote": "May 27 review: stale reward links remain hidden until a fresh public check succeeds, ad placeholders stay hidden until production placements are ready, and homepage guidance now prioritizes real next actions over duplicate summary cards.",
       "sourcePolicy": {
         "official": "Official information from Scopely or in-game screens.",
         "public": "Publicly visible web pages, creator posts, or published reward lists.",
@@ -69,7 +69,62 @@ window.RollRadarSeed = {
         "reason": "Only attempt with a healthy dice bank or a strong event/boost overlap."
       }
     ],
-    "events": [],
+    "events": [
+      {
+        "id": "quick-wins",
+        "name": "Quick Wins",
+        "type": "daily",
+        "status": "active",
+        "startsAt": "2026-05-27T12:00:00.000Z",
+        "endsAt": "2026-05-28T12:00:00.000Z",
+        "source": "official",
+        "bestFor": [
+          "daily progress",
+          "free rolls",
+          "sticker value"
+        ],
+        "actions": [
+          "Finish all three daily tasks before deciding whether to spend dice.",
+          "Use the in-game reset timer as the final authority if it differs from this site."
+        ]
+      },
+      {
+        "id": "sticker-boom",
+        "name": "Sticker Boom Watch",
+        "type": "boost",
+        "status": "watch",
+        "startsAt": "2026-05-27T16:00:00.000Z",
+        "endsAt": "2026-05-27T22:00:00.000Z",
+        "source": "community",
+        "bestFor": [
+          "sticker packs",
+          "opening vaults",
+          "album completion"
+        ],
+        "actions": [
+          "Do not open a vault until the boost is visible in-game.",
+          "Use this as a preparation watch, not a confirmed trigger."
+        ]
+      },
+      {
+        "id": "golden-blitz-watch",
+        "name": "Golden Blitz Watch",
+        "type": "trade",
+        "status": "watch",
+        "startsAt": "2026-05-27T18:00:00.000Z",
+        "endsAt": "2026-05-28T02:00:00.000Z",
+        "source": "community",
+        "bestFor": [
+          "gold sticker trades",
+          "album completion",
+          "friend trading"
+        ],
+        "actions": [
+          "Prepare screenshots and target trades, but wait for in-game confirmation before using wild cards.",
+          "Use the sticker planner to decide whether vault pressure can wait."
+        ]
+      }
+    ],
     "milestones": [
       {
         "eventId": "puppet-party",
@@ -512,13 +567,18 @@ window.RollRadarSeed = {
       "rewardLinks": "Reward links",
       "dicePreviewValue": "{dice} dice route",
       "dicePreviewOfficial": "Official reward route",
+      "dicePreviewEmptyTitle": "Official rewards only for now",
+      "dicePreviewEmptyCopy": "No fresh public dice links are safe to show right now. Use the official rewards page and refresh later.",
       "eventWindows": "Event windows",
+      "eventPreviewEmptyTitle": "Fresh event check needed",
+      "eventPreviewEmptyCopy": "Spend windows stay hidden until a newer public check succeeds. Do Quick Wins first, then refresh before using timers.",
       "savedPlan": "Saved plan",
       "nextRefresh": "Daily reset",
       "heroOverlayTitle": "Game-day reset",
       "heroOverlayCopy": "Checklist resets at {time} ({zone}).",
       "playerName": "Player name",
       "resourceGap": "Resource gap",
+      "spendGuardrails": "Spend guardrails",
       "planDriversTitle": "What is driving this call",
       "suggestedTargets": "Suggested targets",
       "target_next-dice": "Next dice reward",
@@ -1125,13 +1185,18 @@ window.RollRadarSeed = {
       "rewardLinks": "奖励链接",
       "dicePreviewValue": "{dice} 骰子入口",
       "dicePreviewOfficial": "官方奖励入口",
+      "dicePreviewEmptyTitle": "当前只保留官方奖励入口",
+      "dicePreviewEmptyCopy": "暂时没有足够新的公开骰子链接可安全展示。先用官方奖励页，刷新后再回来检查。",
       "eventWindows": "活动窗口",
+      "eventPreviewEmptyTitle": "需要重新核查活动窗口",
+      "eventPreviewEmptyCopy": "在拿到更新的公开核查前，本站会隐藏冲分窗口。先做 Quick Wins，再刷新确认。",
       "savedPlan": "已保存计划",
       "nextRefresh": "每日重置",
       "heroOverlayTitle": "游戏日重置",
       "heroOverlayCopy": "清单会在 {time} 重置（{zone}）。",
       "playerName": "玩家昵称",
       "resourceGap": "资源缺口",
+      "spendGuardrails": "花骰子前的边界",
       "planDriversTitle": "这次判断由什么驱动",
       "suggestedTargets": "推荐目标",
       "target_next-dice": "下个骰子奖励",
@@ -1738,7 +1803,11 @@ window.RollRadarSeed = {
       "rewardLinks": "獎勵連結",
       "dicePreviewValue": "{dice} 骰子入口",
       "dicePreviewOfficial": "官方獎勵入口",
+      "dicePreviewEmptyTitle": "目前只保留官方獎勵入口",
+      "dicePreviewEmptyCopy": "暫時沒有足夠新的公開骰子連結可安全顯示。先用官方獎勵頁，刷新後再回來檢查。",
       "eventWindows": "活動窗口",
+      "eventPreviewEmptyTitle": "需要重新核查活動窗口",
+      "eventPreviewEmptyCopy": "在拿到更新的公開核查前，本站會隱藏衝分窗口。先做 Quick Wins，再刷新確認。",
       "savedPlan": "已儲存計畫",
       "ready": "就緒",
       "saved": "已儲存",
@@ -1833,6 +1902,7 @@ window.RollRadarSeed = {
       "heroOverlayCopy": "清單會在 {time} 重置（{zone}）。",
       "playerName": "玩家暱稱",
       "resourceGap": "資源缺口",
+      "spendGuardrails": "花骰子前的邊界",
       "planDriversTitle": "這次判斷由什麼驅動",
       "suggestedTargets": "推薦目標",
       "target_next-dice": "下個骰子獎勵",
